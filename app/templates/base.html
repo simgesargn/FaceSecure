@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceSecure - {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Anasayfa</a>
+            <a href="/login">Giriş Yap</a>
+            <a href="/register">Kayıt Ol (Admin)</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/admin">Yönetim</a>
+            <button id="logout-btn" style="display: none;">Çıkış Yap</button>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2023 FaceSecure. Tüm Hakları Saklıdır.</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutBtn = document.getElementById('logout-btn');
+            const token = localStorage.getItem('jwt_token');
+
+            if (token) {
+                logoutBtn.style.display = 'block';
+            }
+
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('jwt_token');
+                localStorage.removeItem('username');
+                window.location.href = '/login';
+            });
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

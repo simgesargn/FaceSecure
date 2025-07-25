@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Hoş Geldiniz, <span id="username-display"></span>!</h1>
+    <p>Giriş başarılı. Burası kişisel kontrol paneliniz.</p>
+    <p>Bu sayfada kullanıcının kendi profil bilgilerini görmesi, belki parolasını değiştirmesi gibi özellikler eklenebilir.</p>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const username = localStorage.getItem('username');
+        if (username) {
+            document.getElementById('username-display').textContent = username;
+        } else {
+            window.location.href = '/login'; // Kullanıcı adı yoksa giriş sayfasına yönlendir
+        }
+    });
+</script>
+{% endblock %}

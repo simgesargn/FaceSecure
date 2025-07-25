@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: facesecure_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password 
+    networks:
+      - facesecure_network
+
+  web:
+    build: . # Dockerfile'ı mevcut dizinde ara
+    container_name: facesecure_web
+    ports:
+      - "5001:5000"
+    volumes:
+      - .:/app # Yerel kodu konteynere bağla 
+      # - /app/models/facenet_keras.h5:/app/models/facenet_keras.h5 
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      MONGO_URI: ${MONGO_URI}
+      DATABASE_NAME: ${DATABASE_NAME}
+      ADMIN_USERNAME: ${ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+    depends_on:
+      - mongodb
+    networks:
+      - facesecure_network
+    restart: always # Hata durumunda yeniden başlat
+
+volumes:
+  mongodb_data:
+
+networks:
+  facesecure_network:
+    driver: bridge

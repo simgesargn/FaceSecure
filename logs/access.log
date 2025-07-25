@@ -1,0 +1,102 @@
+2025-07-24 20:44:03.448 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 20:44:08.692 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 20:44:12.449 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 20:44:16.547 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 20:44:21.814 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 20:44:28.204 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 20:44:35.949 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 20:44:47.063 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 20:45:04.026 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 20:45:33.802 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 20:46:29.178 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 20:47:32.999 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 20:48:36.997 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 20:49:41.291 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 20:50:45.534 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 20:51:50.197 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 22:38:02.874 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 22:38:02.883 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-24 22:38:07.346 | ERROR    | app.utils:<module>:21 - FaceNet modeli yüklenirken hata: bad marshal data (unknown type code)
+2025-07-24 22:38:07.351 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-25 18:15:33.564 | INFO     | app.utils:<module>:12 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-25 18:15:33.573 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-25 18:15:39.910 | INFO     | app.utils:<module>:12 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-25 18:15:39.916 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-25 18:17:04.016 | INFO     | app.utils:<module>:12 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-25 18:17:04.021 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-25 18:29:18.717 | INFO     | app.utils:<module>:12 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-25 18:29:18.722 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-25 18:31:46.584 | INFO     | app.utils:<module>:12 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-25 18:31:46.589 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-25 18:31:56.414 | INFO     | app.utils:<module>:12 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-25 18:31:56.420 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-25 18:34:25.501 | INFO     | app.utils:<module>:12 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-25 18:34:25.507 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-25 18:34:30.745 | INFO     | app.utils:<module>:12 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-25 18:34:30.750 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-25 23:00:31.876 | INFO     | app.utils:<module>:12 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-25 23:00:31.896 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-25 23:00:37.813 | INFO     | app.utils:<module>:12 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-25 23:00:37.819 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-25 23:04:45.184 | INFO     | app.utils:<module>:12 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-25 23:04:45.190 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-25 23:06:57.708 | INFO     | app.utils:<module>:12 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-25 23:06:57.722 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-25 23:07:03.378 | INFO     | app.utils:<module>:12 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-25 23:07:03.400 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-25 23:09:59.996 | INFO     | app.models:create_user:38 - Kullanıcı 'admin' başarıyla oluşturuldu. ID: 68840ec7a494fa9b89c6ca59
+2025-07-25 23:09:59.997 | INFO     | __main__:create_admin_user_if_not_exists:21 - Varsayılan admin kullanıcısı 'admin' başarıyla oluşturuldu.
+2025-07-25 23:15:40.637 | INFO     | app.routes:login_with_password:138 - Kullanıcı 'admin' parola ile başarıyla giriş yaptı. IP: 172.18.0.1
+2025-07-25 23:17:53.842 | INFO     | app.routes:login_with_password:138 - Kullanıcı 'admin' parola ile başarıyla giriş yaptı. IP: 172.18.0.1
+2025-07-25 23:20:39.294 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:20:39.316 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:20:43.201 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:20:43.202 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:20:47.863 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:20:47.865 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:20:54.325 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:20:54.327 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:20:59.619 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:20:59.620 | WARNING  | app.routes:login_with_face:173 - Birden fazla yüz algılandı. Giriş reddedildi. IP: 172.18.0.1
+2025-07-25 23:21:05.902 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:21:05.907 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:21:07.833 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:21:07.834 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:21:08.843 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:21:08.849 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:21:10.621 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:21:10.623 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:21:13.985 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:21:13.987 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:21:22.407 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:21:22.411 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:21:29.852 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:21:29.854 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:22:02.253 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:22:02.260 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:22:11.438 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:22:11.440 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:22:18.736 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:22:18.737 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:22:27.656 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:22:27.658 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:22:48.359 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:22:48.375 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-25 23:24:16.432 | INFO     | app.routes:login_with_password:138 - Kullanıcı 'admin' parola ile başarıyla giriş yaptı. IP: 172.18.0.1
+2025-07-25 23:27:26.859 | INFO     | app.routes:login_with_password:138 - Kullanıcı 'admin' parola ile başarıyla giriş yaptı. IP: 172.18.0.1

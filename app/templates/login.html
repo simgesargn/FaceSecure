@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}Giriş Yap{% endblock %}
+
+{% block head %}
+    <style>
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            background-color: #000;
+        }
+        #videoElement {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .canvas-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #login-messages {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        #login-messages.success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+        #login-messages.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h1>Giriş Yap</h1>
+
+    <h2>Parola ile Giriş</h2>
+    <form id="password-login-form">
+        <div>
+            <label for="login-username">Kullanıcı Adı:</label>
+            <input type="text" id="login-username" name="username" required>
+        </div>
+        <div>
+            <label for="login-password">Parola:</label>
+            <input type="password" id="login-password" name="password" required>
+        </div>
+        <button type="submit">Giriş Yap</button>
+    </form>
+
+    <hr>
+
+    <h2>Yüz Tanıma ile Giriş</h2>
+    <div class="video-container">
+        <video id="videoElement" autoplay></video>
+        <canvas id="canvasOverlay" class="canvas-overlay"></canvas>
+    </div>
+    <p>Lütfen kameraya bakın ve "Yüz ile Giriş Yap" butonuna tıklayın.</p>
+    <div>
+        <label for="face-login-username-hint">Kullanıcı Adı İpucu (İsteğe Bağlı):</label>
+        <input type="text" id="face-login-username-hint" name="username_hint">
+    </div>
+    <button id="face-login-btn">Yüz ile Giriş Yap</button>
+    <div id="login-messages"></div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const passwordLoginForm = document.getElementById('password-login-form');
+    const faceLoginBtn = document.getElementById('face-login-btn');
+    const videoElement = document.getElementById('videoElement');
+    const canvasOverlay = document.getElementById('canvasOverlay');
+    const context = canvasOverlay.getContext('2d');
+    const loginMessagesDiv = document.getElementById('login-messages');
+    const faceLoginUsernameHint = document.getElementById('face-login-username-hint');
+
+    let stream;
+    let captureInterval;
+
+    // show messages
+    function showMessage(message, type) {
+        loginMessagesDiv.textContent = message;
+        loginMessagesDiv.className = `message ${type}`;
+        setTimeout(() => {
+            loginMessagesDiv.textContent = '';
+            loginMessagesDiv.className = 'message';
+        }, 5000); 
+    }
+
+    // Parola ile Giriş Formu Submit İşlemi
+    passwordLoginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('login-username').value;
+        const password = document.getElementById('login-password').value;
+
+        try {
+            const response = await fetch('/api/auth/login/password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem('jwt_token', data.token);
+                localStorage.setItem('username', data.username);
+                showMessage(data.message, 'success');
+                window.location.href = '/dashboard';
+            } else {
+                showMessage(data.message, 'error');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            showMessage('Bir hata oluştu. Lütfen tekrar deneyin.', 'error');
+        }
+    });
+
+    // Kamerayı Başlat
+    async function startCamera() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            videoElement.srcObject = stream;
+            videoElement.onloadedmetadata = () => {
+                videoElement.play();
+                canvasOverlay.width = videoElement.videoWidth;
+                canvasOverlay.height = videoElement.videoHeight;
+            };
+        } catch (err) {
+            console.error("Kameraya erişim reddedildi veya hata oluştu: ", err);
+            showMessage("Kameraya erişilemiyor. Lütfen izinleri kontrol edin.", 'error');
+        }
+    }
+
+    // Yüz tespiti için canlı akış gönderimi
+    function sendFrameForDetection() {
+        if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+            context.clearRect(0, 0, canvasOverlay.width, canvasOverlay.height);
+            context.drawImage(videoElement, 0, 0, canvasOverlay.width, canvasOverlay.height);
+            const imageData = canvasOverlay.toDataURL('image/jpeg', 0.8); // Düşük kalite, hızlı transfer için
+
+        }
+    }
+
+    // Yüz ile Giriş Butonu İşlemi
+    faceLoginBtn.addEventListener('click', async () => {
+        if (!stream) {
+            showMessage("Kamera başlatılmadı. Lütfen önce kamerayı başlatın.", 'error');
+            return;
+        }
+
+        if (videoElement.readyState !== videoElement.HAVE_ENOUGH_DATA) {
+            showMessage("Kamera hazır değil. Lütfen bekleyin.", 'error');
+            return;
+        }
+
+        // Geçerli kareyi al ve Base64'e dönüştür
+        context.drawImage(videoElement, 0, 0, canvasOverlay.width, canvasOverlay.height);
+        const imageData = canvasOverlay.toDataURL('image/jpeg', 0.9); // Yüksek kalite
+
+        const usernameHint = faceLoginUsernameHint.value.trim();
+
+        try {
+            const response = await fetch('/api/auth/login/face', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ image: imageData, username_hint: usernameHint })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem('jwt_token', data.token);
+                localStorage.setItem('username', data.username);
+                showMessage(`${data.message} Benzerlik: %${data.similarity}`, 'success');
+                // stopCamera(); // Giriş başarılıysa kamerayı durdur
+                window.location.href = '/dashboard';
+            } else {
+                showMessage(data.message, 'error');
+            }
+        } catch (error) {
+            console.error('Face login error:', error);
+            showMessage('Yüz ile giriş sırasında bir hata oluştu.', 'error');
+        }
+    });
+
+    // Sayfa yüklendiğinde kamerayı başlat
+    document.addEventListener('DOMContentLoaded', () => {
+        startCamera();
+    });
+
+    // Sayfadan ayrılırken kamerayı durdur
+    window.addEventListener('beforeunload', () => {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+        if (captureInterval) {
+            clearInterval(captureInterval);
+        }
+    });
+
+</script>
+{% endblock %}

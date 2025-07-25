@@ -1,0 +1,14 @@
+Flask==2.2.5
+PyMongo==4.3.3
+python-dotenv==1.0.0
+PyJWT==2.6.0
+bcrypt==4.0.1
+opencv-python
+mediapipe
+keras-facenet
+tensorflow
+keras
+Pillow==10.0.0
+numpy
+loguru==0.7.0
+Jinja2==3.1.6

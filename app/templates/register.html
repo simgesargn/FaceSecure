@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+
+{% block title %}Kayıt Ol{% endblock %}
+
+{% block head %}
+    <style>
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            background-color: #000;
+        }
+        #videoElement {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .canvas-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #register-messages {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        #register-messages.success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+        #register-messages.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+        .embedding-preview {
+            display: inline-block;
+            margin: 5px;
+            border: 1px solid #ddd;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+        .embedding-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            display: block;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h1>Yeni Kullanıcı Kaydı (Admin Yetkili)</h1>
+
+    <form id="register-form">
+        <div>
+            <label for="username">Kullanıcı Adı:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+            <label for="password">Parola:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <h3>Yüz Verisi Kaydı (10+ Farklı Poz)</h3>
+        <p>Lütfen kameraya bakın ve farklı açılardan (sağ, sol, yukarı, aşağı, gülümseme vb.) fotoğraf çekerek 10'dan fazla yüz verisi kaydedin.</p>
+        
+        <div class="video-container">
+            <video id="videoElement" autoplay></video>
+            <canvas id="canvasOverlay" class="canvas-overlay"></canvas>
+        </div>
+        
+        <button type="button" id="capture-btn">Yüz Kaydet</button>
+        <p>Kaydedilen Yüz Sayısı: <span id="face-count">0</span></p>
+        <div id="embedding-previews">
+            </div>
+        <br>
+        <button type="submit" id="submit-registration" disabled>Kullanıcıyı Kaydet</button>
+    </form>
+    <div id="register-messages"></div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const registerForm = document.getElementById('register-form');
+    const captureBtn = document.getElementById('capture-btn');
+    const videoElement = document.getElementById('videoElement');
+    const canvasOverlay = document.getElementById('canvasOverlay');
+    const context = canvasOverlay.getContext('2d');
+    const faceCountSpan = document.getElementById('face-count');
+    const embeddingPreviewsDiv = document.getElementById('embedding-previews');
+    const submitRegistrationBtn = document.getElementById('submit-registration');
+    const registerMessagesDiv = document.getElementById('register-messages');
+
+    let stream;
+    let faceEmbeddings = [];
+    let capturedImages = []; // Önizleme için resimleri tutar
+
+    // Show messages
+    function showMessage(message, type) {
+        registerMessagesDiv.textContent = message;
+        registerMessagesDiv.className = `message ${type}`;
+        setTimeout(() => {
+            registerMessagesDiv.textContent = '';
+            registerMessagesDiv.className = 'message';
+        }, 5000); // Mesaj 5 saniye sonra kaybolur
+    }
+
+    // Kamerayı Başlat
+    async function startCamera() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            videoElement.srcObject = stream;
+            videoElement.onloadedmetadata = () => {
+                videoElement.play();
+                canvasOverlay.width = videoElement.videoWidth;
+                canvasOverlay.height = videoElement.videoHeight;
+                // Live detection (optional, can be performance heavy)
+                // setInterval(drawFaceRectangles, 100);
+            };
+        } catch (err) {
+            console.error("Kameraya erişim reddedildi veya hata oluştu: ", err);
+            showMessage("Kameraya erişilemiyor. Lütfen izinleri kontrol edin.", 'error');
+        }
+    }
+
+    // Yüz Kaydet Butonu İşlemi
+    captureBtn.addEventListener('click', async () => {
+        if (!stream) {
+            showMessage("Kamera başlatılmadı. Lütfen önce kamerayı başlatın.", 'error');
+            return;
+        }
+
+        if (videoElement.readyState !== videoElement.HAVE_ENOUGH_DATA) {
+            showMessage("Kamera hazır değil. Lütfen bekleyin.", 'error');
+            return;
+        }
+
+        // Geçerli kareyi al ve Base64'e dönüştür
+        context.drawImage(videoElement, 0, 0, canvasOverlay.width, canvasOverlay.height);
+        const imageData = canvasOverlay.toDataURL('image/jpeg', 0.9);
+
+        // Sunucuya yüz tespiti ve embedding için gönder
+        try {
+            const response = await fetch('/api/auth/login/face', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ image: imageData })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.message === 'Giriş başarılı!') {
+                
+                // MOCK data (Gerçekte backend'den gelmeli):
+                const mockEmbedding = Array(128).fill(Math.random()); 
+                faceEmbeddings.push(mockEmbedding);
+                
+                capturedImages.push(imageData); // Önizleme için resmi sakla
+                updateFaceCount();
+                renderPreviews();
+                showMessage('Yüz başarıyla kaydedildi!', 'success');
+            } else if (data.message === 'Yüz algılanmadı.' || data.message.includes('Birden fazla yüz')) {
+                showMessage(data.message, 'error');
+            } else {
+                showMessage(`Yüz kaydı başarısız: ${data.message}`, 'error');
+            }
+        } catch (error) {
+            console.error('Yüz kaydetme hatası:', error);
+            showMessage('Yüz kaydı sırasında bir hata oluştu.', 'error');
+        }
+    });
+
+    function updateFaceCount() {
+        faceCountSpan.textContent = faceEmbeddings.length;
+        if (faceEmbeddings.length >= 10) {
+            submitRegistrationBtn.disabled = false;
+        } else {
+            submitRegistrationBtn.disabled = true;
+        }
+    }
+
+    function renderPreviews() {
+        embeddingPreviewsDiv.innerHTML = '';
+        capturedImages.forEach((imgData, index) => {
+            const div = document.createElement('div');
+            div.className = 'embedding-preview';
+            const img = document.createElement('img');
+            img.src = imgData;
+            div.appendChild(img);
+            const span = document.createElement('span');
+            span.textContent = `Poz ${index + 1}`;
+            div.appendChild(span);
+            embeddingPreviewsDiv.appendChild(div);
+        });
+    }
+
+    // Kullanıcı Kayıt Formu Submit İşlemi
+    registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (faceEmbeddings.length < 10) {
+            showMessage("Lütfen en az 10 farklı pozda yüz verisi kaydedin.", 'error');
+            return;
+        }
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const adminToken = localStorage.getItem('jwt_token'); // Admin token'ını al
+
+        if (!adminToken) {
+            showMessage("Kayıt işlemi için admin yetkisi gereklidir. Lütfen admin olarak giriş yapın.", 'error');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${adminToken}` // Admin token'ını gönder
+                },
+                body: JSON.stringify({
+                    username,
+                    password,
+                    face_embeddings: faceEmbeddings // Gönderilen embeddingler
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                showMessage(data.message, 'success');
+                faceEmbeddings = []; // Kayıt sonrası sıfırla
+                capturedImages = [];
+                updateFaceCount();
+                renderPreviews();
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+            } else {
+                showMessage(data.message, 'error');
+            }
+        } catch (error) {
+            console.error('Kayıt hatası:', error);
+            showMessage('Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.', 'error');
+        }
+    });
+
+    // Sayfa yüklendiğinde kamerayı başlat
+    document.addEventListener('DOMContentLoaded', startCamera);
+
+    // Sayfadan ayrılırken kamerayı durdur
+    window.addEventListener('beforeunload', () => {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    });
+</script>
+{% endblock %}
