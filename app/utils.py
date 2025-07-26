@@ -1,8 +1,7 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-from keras_facenet import FaceNet # Simge: FaceNet modelini bu kütüphane ile kolayca yükleyeceğiz.
-# from sklearn.preprocessing import Normalizer # Simge: Bu modül, numpy/sklearn uyumsuzluğu yaptığı için şimdilik kaldırıldı.
+from keras_facenet import FaceNet 
 from loguru import logger
 import os
 
@@ -11,30 +10,43 @@ try:
     facenet_model = FaceNet() 
     logger.info("FaceNet modeli başarıyla yüklendi (keras-facenet).")
 except Exception as e:
-    logger.error(f"FaceNet modeli yüklenirken hata: {e}") # Simge: Model yüklenmezse uygulama çalışmaz, o yüzden hata logu önemli.
+    logger.error(f"FaceNet modeli yüklenirken hata: {e}") 
     facenet_model = None
 
 # MediaPipe Face Detection ve Face Mesh modüllerini başlatıyorum.
-# Yüz algılama ve yüzdeki önemli noktaları bulmak için kullanılıyorlar.
 mp_face_detection = mp.solutions.face_detection
 mp_face_mesh = mp.solutions.face_mesh
 mp_drawing = mp.solutions.drawing_utils
 
-# Yüz algılama için eşik değerleri. Güven eşiği ne kadar yüksek olursa, algılama o kadar kesin olur.
-DETECTION_CONFIDENCE = 0.8 # Simge: %80 güven eşiği belirledim, daha düşük değerlerde yanlış pozitifler artıyordu.
-TRACKING_CONFIDENCE = 0.5 # MediaPipe Face Mesh'te tracking için de kullanılır, ama şimdilik sadece detection kullanıyoruz.
+# Yüz algılama için eşik değerleri.
+DETECTION_CONFIDENCE = 0.70 
+TRACKING_CONFIDENCE = 0.5 
 
 def preprocess_face(image, required_size=(160, 160)):
     """
     Simge: Yüz görüntüsünü FaceNet modelinin beklediği formata getiriyor.
     Boyutlandırma ve standardizasyon burada yapılıyor.
     """
-    image = cv2.resize(image, required_size)
-    image = image.astype('float32')
-    mean, std = image.mean(), image.std()
-    image = (image - mean) / std # Standardizasyon: Veriyi modele daha uygun hale getirir.
-    image = np.expand_dims(image, axis=0) # Model tek bir resim yerine bir "batch" bekler, o yüzden boyut ekliyorum.
-    return image
+    # Görüntünün boş olup olmadığını kontrol et, boşsa None döndür.
+    if image is None or image.size == 0 or image.shape[0] == 0 or image.shape[1] == 0: # Simge: Daha sağlam kontrol ekledim.
+        logger.warning("preprocess_face: Görüntü boş veya geçersiz boyutlara sahip, None döndürüldü.")
+        return None
+
+    try:
+        # Simge: Görüntüyü yeniden boyutlandırıyorum.
+        resized_image = cv2.resize(image, required_size)
+        resized_image = resized_image.astype('float32')
+        
+        # Simge: Standardizasyon. Bu, modelin daha iyi performans göstermesine yardımcı olur.
+        mean, std = resized_image.mean(), resized_image.std()
+        image_standardized = (resized_image - mean) / std 
+        
+        # Simge: Modele uygun hale getirmek için bir boyut daha ekliyorum (batch boyutu).
+        image_expanded = np.expand_dims(image_standardized, axis=0) 
+        return image_expanded
+    except Exception as e:
+        logger.error(f"preprocess_face: Görüntü ön işleme sırasında hata: {e}")
+        return None
 
 def get_face_embedding(face_image):
     """
@@ -42,40 +54,54 @@ def get_face_embedding(face_image):
     Bu imza, diğer yüzlerle karşılaştırmak için kullanılacak.
     """
     if facenet_model is None:
-        logger.error("FaceNet modeli yüklenemedi. Embedding çıkarılamıyor.")
+        logger.error("get_face_embedding: FaceNet modeli yüklenemedi. Embedding çıkarılamıyor.")
+        return None
+    
+    # Simge: Ön işleme sonrası görüntü None gelirse, embedding çıkarmayı deneme.
+    on_islenmis_yuz = preprocess_face(face_image)
+    if on_islenmis_yuz is None: 
+        logger.warning("get_face_embedding: Ön işlenmiş yüz boş veya geçersiz, embedding çıkarılamıyor.")
         return None
 
-    # Simge: Görüntüyü modele vermeden önce ön işleme tabi tutuyorum.
-    on_islenmis_yuz = preprocess_face(face_image) 
-    # Simge: Modelden embedding'i alıyorum.
-    embedding = facenet_model.embeddings([on_islenmis_yuz])[0]
-    
-    # Simge: Normalizasyon işlemi, embedding'leri standart bir aralığa getirir,
-    # bu da benzerlik hesaplamalarını daha güvenilir yapar.
-    # Normalizer'ı kaldırdığımız için manuel normalizasyon yapıyorum.
-    embedding_norm = embedding / np.linalg.norm(embedding) # L2 normalizasyon
-    return embedding_norm
+    try:
+        # Simge: Modelden embedding'i alıyorum. embeddings metodu bir liste bekler.
+        embedding = facenet_model.embeddings(on_islenmis_yuz)[0] 
+        
+        # Simge: L2 normalizasyon. Embedding'leri birim vektör haline getirir,
+        # bu da kosinüs benzerliği için idealdir.
+        embedding_norm = embedding / np.linalg.norm(embedding) 
+        return embedding_norm
+    except Exception as e:
+        logger.error(f"get_face_embedding: Embedding çıkarımı sırasında hata: {e}")
+        return None
 
 def detect_faces(frame):
     """
     Simge: Kamera görüntüsündeki yüzleri algılar ve her yüzün konumunu (bounding box) döndürür.
     MediaPipe'ın hızlı ve doğru yüz algılama yeteneğini kullanıyorum.
     """
-    algilanan_yuzler = [] # Simge: Algılanan yüzleri bu listeye ekleyeceğim.
-    h, w, _ = frame.shape # Görüntünün boyutlarını alıyorum.
-    with mp_face_detection.FaceDetection(min_detection_confidence=DETECTION_CONFIDENCE) as face_detection:
-        # Görüntüyü RGB'ye çevirmek MediaPipe için gerekli.
-        results = face_detection.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-        if results.detections:
-            for detection in results.detections:
-                # Bounding box koordinatlarını alıyorum.
-                bboxC = detection.location_data.relative_bounding_box
-                ih, iw, _ = frame.shape
-                # Koordinatları piksel değerlerine çeviriyorum.
-                x, y, genislik, yukseklik = int(bboxC.xmin * iw), int(bboxC.ymin * ih), \
-                                         int(bboxC.width * iw), int(bboxC.height * ih)
-                algilanan_yuzler.append((x, y, genislik, yukseklik)) # Türkçe değişken adları
-    return algilanan_yuzler
+    algilanan_yuzler = [] 
+    
+    # Görüntünün boş olup olmadığını kontrol et. Boşsa, OpenCV hatası vermeden boş liste döndür.
+    if frame is None or frame.size == 0 or frame.shape[0] == 0 or frame.shape[1] == 0: # Simge: Daha sağlam kontrol ekledim.
+        logger.warning("detect_faces: Görüntü boş veya geçersiz, yüz algılanamadı.")
+        return []
+
+    try:
+        h, w, _ = frame.shape 
+        with mp_face_detection.FaceDetection(min_detection_confidence=DETECTION_CONFIDENCE) as face_detection:
+            results = face_detection.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+            if results.detections:
+                for detection in results.detections:
+                    bboxC = detection.location_data.relative_bounding_box
+                    ih, iw, _ = frame.shape
+                    x, y, genislik, yukseklik = int(bboxC.xmin * iw), int(bboxC.ymin * ih), \
+                                             int(bboxC.width * iw), int(bboxC.height * ih)
+                    algilanan_yuzler.append((x, y, genislik, yukseklik)) 
+        return algilanan_yuzler
+    except Exception as e:
+        logger.error(f"detect_faces: Yüz algılama sırasında hata: {e}")
+        return []
 
 def calculate_similarity(embedding1, embedding2):
     """
@@ -83,22 +109,23 @@ def calculate_similarity(embedding1, embedding2):
     Değer 0 ile 100 arasında olacak şekilde ölçekleniyor, bu daha anlaşılır.
     """
     if embedding1 is None or embedding2 is None:
-        logger.warning("Benzerlik hesaplaması için eksik embedding. 0.0 döndürüldü.") # Simge: Log ekledim.
+        logger.warning("calculate_similarity: Benzerlik hesaplaması için eksik embedding. 0.0 döndürüldü.") 
         return 0.0 
 
-    # Kosinüs benzerliği formülü: (A . B) / (||A|| * ||B||)
-    nokta_carpim = np.dot(embedding1, embedding2) # Simge: Türkçe değişken adı
-    norm_embed1 = np.linalg.norm(embedding1)
-    norm_embed2 = np.linalg.norm(embedding2)
+    try:
+        nokta_carpim = np.dot(embedding1, embedding2) 
+        norm_embed1 = np.linalg.norm(embedding1)
+        norm_embed2 = np.linalg.norm(embedding2)
 
-    if norm_embed1 == 0 or norm_embed2 == 0:
-        logger.warning("Sıfır normlu embedding bulundu, benzerlik 0.0 döndürüldü.") # Simge: Log ekledim.
+        if norm_embed1 == 0 or norm_embed2 == 0:
+            logger.warning("calculate_similarity: Sıfır normlu embedding bulundu, benzerlik 0.0 döndürüldü.") 
+            return 0.0
+
+        benzerlik_orani = nokta_carpim / (norm_embed1 * norm_embed2) 
+        return ((benzerlik_orani + 1) / 2) * 100 
+    except Exception as e:
+        logger.error(f"calculate_similarity: Benzerlik hesaplama sırasında hata: {e}")
         return 0.0
-
-    benzerlik_orani = nokta_carpim / (norm_embed1 * norm_embed2) # Simge: Türkçe değişken adı
-    # Kosinüs benzerliği -1 (tamamen zıt) ile 1 (tamamen aynı) arasındadır.
-    # Benzerliği %0 ile %100 arasına ölçekliyorum, kullanıcı için daha anlamlı.
-    return ((benzerlik_orani + 1) / 2) * 100 
 
 def get_face_roi(frame, bbox):
     """
@@ -107,15 +134,35 @@ def get_face_roi(frame, bbox):
     """
     x, y, w, h = bbox
     
-    # Simge: Yüz bölgesini çerçeveden kesiyorum.
-    yuz_bolgesi_resim = frame[y:y+h, x:x+w]
-    return yuz_bolgesi_resim
+    # Simge: Kırpma sınırlarını kontrol ediyorum, böylece görüntü dışına taşmıyoruz.
+    if y < 0: y = 0
+    if x < 0: x = 0
+    if y + h > frame.shape[0]: h = frame.shape[0] - y
+    if x + w > frame.shape[1]: w = frame.shape[1] - x
+
+    if w <= 0 or h <= 0: 
+        logger.warning(f"get_face_roi: Geçersiz kırpma boyutları (w={w}, h={h}), boş ROI döndürüldü.")
+        return None
+
+    try:
+        yuz_bolgesi_resim = frame[y:y+h, x:x+w]
+        return yuz_bolgesi_resim
+    except Exception as e:
+        logger.error(f"get_face_roi: Yüz bölgesi kırpma sırasında hata: {e}")
+        return None
 
 def draw_annotations(frame, faces):
     """
     Simge: Algılanan yüzlerin etrafına yeşil dikdörtgenler çizer.
     Bu, kullanıcının yüzünün algılanıp algılanmadığını görsel olarak görmesini sağlar.
     """
-    for (x, y, w, h) in faces:
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2) # Yeşil renkli 2 piksel kalınlığında dikdörtgen.
-    return frame
+    if frame is None or frame.size == 0: # Simge: Boş frame kontrolü ekledim.
+        return frame
+
+    try:
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2) 
+        return frame
+    except Exception as e:
+        logger.error(f"draw_annotations: Çerçeve çizimi sırasında hata: {e}")
+        return frame

@@ -75,7 +75,8 @@
 
 {% block scripts %}
 <script>
-    // giriş sayfasındaki parola ve yüz tanıma ile giriş işlemleri
+    // Simge: Merhaba! Bu script, giriş sayfasındaki parola ve yüz tanıma ile giriş işlemlerini yönetiyor.
+    // Kullanıcı deneyimini pürüzsüz hale getirmek için çok uğraştım! :)
     const passwordLoginForm = document.getElementById('password-login-form');
     const faceLoginBtn = document.getElementById('face-login-btn');
     const videoElement = document.getElementById('videoElement');
@@ -85,14 +86,14 @@
     const faceLoginUsernameHint = document.getElementById('face-login-username-hint');
 
     let stream;
-    let captureInterval; 
+    let captureInterval; // Şimdilik kullanılmasa da, canlı algılama için bir gün lazım olabilir.
 
-    // Mesajları kullanıcıya göstermek için yardımcı fonksiyon. Hata ve başarılı giriş için
-  
+    // Mesajları kullanıcıya göstermek için küçük bir yardımcı fonksiyon.
+    // Hataları ve başarıları daha anlaşılır kılıyor.
     function showMessage(message, type) {
         loginMessagesDiv.textContent = message;
         loginMessagesDiv.className = `message ${type}`;
-        // Mesaj 5 saniye sonra kaybolsun sağlıyorum
+        // Mesajın 5 saniye sonra kaybolmasını sağlıyorum, kullanıcıyı rahatsız etmesin.
         setTimeout(() => {
             loginMessagesDiv.textContent = '';
             loginMessagesDiv.className = 'message';
@@ -100,9 +101,9 @@
     }
 
     // Parola ile Giriş Formu Submit İşlemi
-    // kullanıcı adı ve parola ile giriş yap
+    // Bu kısım, kullanıcı adı ve parola ile giriş yapmayı dener.
     passwordLoginForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Formun varsayılan gönderimini engelle
+        e.preventDefault(); // Formun varsayılan gönderimini engelle, API çağrısını biz yapalım.
         const username = document.getElementById('login-username').value;
         const password = document.getElementById('login-password').value;
 
@@ -118,25 +119,27 @@
             const data = await response.json();
 
             if (response.ok) {
-               
+                // Simge: Giriş başarılıysa, JWT token'ı ve kullanıcı adını localStorage'a kaydediyorum.
+                // Bu token, diğer korumalı sayfalara erişim için kullanılacak.
                 localStorage.setItem('jwt_token', data.token);
                 localStorage.setItem('username', data.username);
                 showMessage(data.message, 'success');
-                // Başarılı girişten sonra dashboard'a yönlendir
-                
+                // Simge: Başarılı girişten sonra dashboard'a yönlendiriyorum.
+                // Bu yönlendirme, token'ın localStorage'da olduğu anda gerçekleşiyor.
                 window.location.href = '/dashboard'; 
             } else {
-                // Hatalı giriş durumunda kullanıcıya hata mesajı göster
+                // Hatalı giriş durumunda kullanıcıya hata mesajı gösteriyorum.
                 showMessage(data.message, 'error');
             }
         } catch (error) {
-            // kullanıcı hata bilgisi
+            // Ağ veya sunucu tarafında bir sorun oluşursa konsola yazıp kullanıcıya bilgi veriyorum.
             console.error('Login error:', error);
             showMessage('Bir hata oluştu. Lütfen tekrar deneyin.', 'error');
         }
     });
 
     // Kamerayı Başlat
+    // Kullanıcı sayfayı açtığında kamera otomatik başlasın istedim, daha pratik oluyor.
     async function startCamera() {
         try {
             stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -152,8 +155,9 @@
         }
     }
 
-    // Yüz ile giriş butonu
-    
+    // Yüz ile Giriş Butonu İşlemi
+    // Kullanıcı butona tıkladığında kameradan anlık görüntüyü alıp yüz tanıma için sunucuya gönderiyorum.
+    // Sunucu, bu karedeki yüzün embedding'ini çıkarıp bana geri gönderecek.
     faceLoginBtn.addEventListener('click', async () => {
         if (!stream) {
             showMessage("Kamera başlatılmadı. Lütfen önce kamerayı başlatın.", 'error');
@@ -167,9 +171,9 @@
 
         // Geçerli kareyi al ve Base64'e dönüştür
         context.drawImage(videoElement, 0, 0, canvasOverlay.width, canvasOverlay.height);
-        const imageData = canvasOverlay.toDataURL('image/jpeg', 0.9);
+        const imageData = canvasOverlay.toDataURL('image/jpeg', 0.9); // Yüksek kalite
 
-        const usernameHint = faceLoginUsernameHint.value.trim(); // Kullanıcı ipucu
+        const usernameHint = faceLoginUsernameHint.value.trim(); // Kullanıcı ipucunu alıyorum.
 
         try {
             const response = await fetch('/api/auth/login/face', {
@@ -183,7 +187,7 @@
             const data = await response.json();
 
             if (response.ok) {
-                // Yüz tanıma ile giriş başarılıysa kullanıcı kaydedilsin
+                // Simge: Yüz tanıma ile giriş başarılıysa token ve kullanıcı adını kaydediyorum.
                 localStorage.setItem('jwt_token', data.token);
                 localStorage.setItem('username', data.username);
                 showMessage(`${data.message} Benzerlik: %${data.similarity}`, 'success');

@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TutiSecure - {% block title %}{% endblock %}</title>
+    <title>SMGSecure - {% block title %}{% endblock %}</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* font ve temel stiller */
+        /* Özel font ve temel stiller */
         body {
-            font-family: 'Inter', sans-serif; 
-            background-color: #f8fafc; 
+            font-family: 'Inter', sans-serif; /* Daha modern bir font */
+            background-color: #f8fafc; /* Hafif gri arka plan */
             color: #334155; /* Koyu gri metin */
         }
         header {
-            background-color: #774c8e;
+            background-color: #1e293b; /* Koyu lacivert header */
             padding: 1rem 0;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
@@ -31,11 +31,11 @@
             transition: background-color 0.3s ease;
         }
         nav a:hover, nav button:hover {
-            background-color: #334155; 
+            background-color: #334155; /* Hover'da daha koyu gri */
         }
         button {
             cursor: pointer;
-            background-color: #774c8e; 
+            background-color: #3b82f6; /* Mavi buton */
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
@@ -43,7 +43,7 @@
             transition: background-color 0.3s ease, transform 0.1s ease;
         }
         button:hover {
-            background-color: #774c8e; 
+            background-color: #2563eb; /* Koyu mavi hover */
             transform: translateY(-1px); /* Hafif yukarı kalkma efekti */
         }
         main {
@@ -83,7 +83,7 @@
         .message {
             margin-top: 15px;
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 0.5rem;
             text-align: center;
             font-weight: 600;
         }
@@ -105,7 +105,7 @@
         <nav>
             <a href="/" class="hover:bg-blue-700">Anasayfa</a>
             <a href="/login" class="hover:bg-blue-700">Giriş Yap</a>
-            <a href="/register" class="hover:bg-blue-700">Kayıt Ol </a>
+            <a href="/register" class="hover:bg-blue-700">Kayıt Ol (Admin)</a>
             <a href="/dashboard" class="hover:bg-blue-700">Dashboard</a>
             <a href="/admin" class="hover:bg-blue-700">Yönetim</a>
             <button id="logout-btn" class="bg-red-600 hover:bg-red-700" style="display: none;">Çıkış Yap</button>
@@ -115,7 +115,7 @@
         {% block content %}{% endblock %}
     </main>
     <footer class="mt-auto">
-        <p>&copy; 2025 TutiSecure. Tüm Hakları Saklıdır.</p>
+        <p>&copy; 2023 SMGSecure. Tüm Hakları Saklıdır.</p>
     </footer>
     <script>
         document.addEventListener('DOMContentLoaded', () => {

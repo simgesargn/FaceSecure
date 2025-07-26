@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, Response, session, redirect, url_for
+from flask import Blueprint, render_template, request, jsonify, Response, redirect, url_for
 from app.models import User, FailedLogin, generate_token, decode_token
 from app.utils import detect_faces, get_face_embedding, calculate_similarity, get_face_roi, draw_annotations
 from config import Config
@@ -43,7 +43,7 @@ def token_required(f):
                 return jsonify({'message': 'Kullanıcı bulunamadı!'}), 401
         except Exception as e:
             logger.error(f"Token doğrulama hatası: {e}")
-            return jsonify({'message': 'Token doğrulanamadı!'}), 401
+            return jsonify({'message': 'Yetkilendirme hatası!'}), 401
         
         return f(current_user, *args, **kwargs)
     return decorated
@@ -138,8 +138,6 @@ def register(current_user):
     # Simge: Embedding'leri doğrudan veritabanına kaydediyorum.
     # Güvenlik için, hassas veritabanlarında embedding'ler şifrelenebilir.
     # Şimdilik hash'leme yapmıyorum çünkü hash'lenen embedding'ler karşılaştırılamaz.
-    # Eğer hash'leme isteniyorsa, bu genellikle bir "salt" ile yapılır ve
-    # her giriş denemesinde aynı yüzün hash'i alınıp karşılaştırılır, ki bu farklı bir mimari gerektirir.
     # Bu yüzden şimdilik doğrudan kaydediyorum.
     face_embeddings_np = [np.array(e, dtype=np.float32).tolist() for e in face_embeddings]
 
@@ -190,6 +188,7 @@ def login_with_face():
         frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
         if frame is None:
+            logger.warning(f"login_with_face: Geçersiz görüntü formatı veya boş kare. IP: {ip_address}") # Simge: Log ekledim.
             failed_login_model.log_attempt("UNKNOWN", ip_address)
             return jsonify({'message': 'Geçersiz görüntü formatı!'}), 400
 
@@ -197,7 +196,7 @@ def login_with_face():
 
         if len(yuzler) == 0:
             failed_login_model.log_attempt("UNKNOWN", ip_address)
-            logger.warning(f"Yüz algılanmadı. Giriş reddedildi. IP: {ip_address}") # Simge: Logları daha açıklayıcı yapıyorum.
+            logger.warning(f"Yüz algılanmadı. Giriş reddedildi. IP: {ip_address}") 
             return jsonify({'message': 'Yüz algılanmadı.'}), 400
         elif len(yuzler) > 1:
             failed_login_model.log_attempt("UNKNOWN", ip_address)
@@ -206,30 +205,36 @@ def login_with_face():
 
         # Algılanan tek yüzü işle
         (x, y, w, h) = yuzler[0]
-        yuz_bolgesi = get_face_roi(frame, (x, y, w, h)) # Simge: Türkçe değişken adı
-        anlik_yuz_embedding = get_face_embedding(yuz_bolgesi) # Simge: Türkçe değişken adı
+        yuz_bolgesi = get_face_roi(frame, (x, y, w, h)) 
+        
+        if yuz_bolgesi is None: # Simge: Kırpılan yüz bölgesi boş gelirse hata ver.
+            logger.warning(f"login_with_face: Yüz bölgesi kırpma sonrası boş. IP: {ip_address}")
+            failed_login_model.log_attempt("UNKNOWN", ip_address)
+            return jsonify({'message': 'Yüz bölgesi işlenirken hata.'}), 500
+
+        anlik_yuz_embedding = get_face_embedding(yuz_bolgesi) 
 
         if anlik_yuz_embedding is None:
             failed_login_model.log_attempt("UNKNOWN", ip_address)
-            logger.error(f"Yüz özellik çıkarımında hata oluştu. IP: {ip_address}")
+            logger.error(f"Yüz özellik çıkarımında hata. IP: {ip_address}")
             return jsonify({'message': 'Yüz özellik çıkarımında hata.'}), 500
 
         # Tüm kayıtlı kullanıcıları gez ve benzerlik kontrolü yap
-        eslesen_kullanicilar = [] # Simge: Türkçe değişken adı
+        eslesen_kullanicilar = [] 
         if username_hint:
-            kullanici = user_model.get_user_by_username(username_hint) # Simge: Türkçe değişken adı
+            kullanici = user_model.get_user_by_username(username_hint) 
             if kullanici: eslesen_kullanicilar.append(kullanici)
         else:
             if user_model.collection:
                 eslesen_kullanicilar = list(user_model.collection.find({}))
 
-        en_iyi_eslesen_kullanici = None # Simge: Türkçe değişken adı
-        en_yuksek_benzerlik = Config.DETECTION_CONFIDENCE * 100 # Eşik değeri (Simge: Bu eşiğin altında kalırsa kabul etmiyorum.)
+        en_iyi_eslesen_kullanici = None 
+        en_yuksek_benzerlik = Config.DETECTION_CONFIDENCE * 100 
 
-        for kullanici_verisi in eslesen_kullanicilar: # Simge: Türkçe değişken adı
-            for kaydedilmis_embedding_listesi in kullanici_verisi.get('face_embeddings', []): # Simge: Türkçe değişken adı
-                kaydedilmis_embedding = np.array(kaydedilmis_embedding_listesi, dtype=np.float32) # Simge: Türkçe değişken adı
-                benzerlik_orani = calculate_similarity(anlik_yuz_embedding, kaydedilmis_embedding) # Simge: Türkçe değişken adı
+        for kullanici_verisi in eslesen_kullanicilar: 
+            for kaydedilmis_embedding_listesi in kullanici_verisi.get('face_embeddings', []): 
+                kaydedilmis_embedding = np.array(kaydedilmis_embedding_listesi, dtype=np.float32) 
+                benzerlik_orani = calculate_similarity(anlik_yuz_embedding, kaydedilmis_embedding) 
                 if benzerlik_orani > en_yuksek_benzerlik:
                     en_yuksek_benzerlik = benzerlik_orani
                     en_iyi_eslesen_kullanici = kullanici_verisi
@@ -250,7 +255,7 @@ def login_with_face():
             return jsonify({'message': f'Yüz eşleşmesi bulunamadı. Benzerlik eşiği %{Config.DETECTION_CONFIDENCE*100} altında kaldı.'}), 401
 
     except Exception as e:
-        logger.error(f"Yüzle giriş sırasında beklenmedik bir hata oluştu: {e}. IP: {ip_address}") # Simge: Hata logunu daha açıklayıcı yaptım.
+        logger.error(f"Yüzle giriş sırasında beklenmedik bir hata oluştu: {e}. IP: {ip_address}") 
         failed_login_model.log_attempt("UNKNOWN", ip_address)
         return jsonify({'message': 'Sunucu hatası.'}), 500
 
@@ -272,7 +277,7 @@ def extract_embedding_api():
         frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
         if frame is None:
-            logger.warning(f"Geçersiz görüntü formatı. IP: {ip_address}")
+            logger.warning(f"extract_embedding_api: Geçersiz görüntü formatı veya boş kare. IP: {ip_address}") # Simge: Log ekledim.
             return jsonify({'message': 'Geçersiz görüntü formatı!'}), 400
 
         yuzler = detect_faces(frame)
@@ -286,6 +291,11 @@ def extract_embedding_api():
 
         (x, y, w, h) = yuzler[0]
         yuz_bolgesi = get_face_roi(frame, (x, y, w, h))
+        
+        if yuz_bolgesi is None: # Simge: Kırpılan yüz bölgesi boş gelirse hata ver.
+            logger.warning(f"extract_embedding_api: Yüz bölgesi kırpma sonrası boş. IP: {ip_address}")
+            return jsonify({'message': 'Yüz bölgesi işlenirken hata.'}), 500
+
         anlik_yuz_embedding = get_face_embedding(yuz_bolgesi)
 
         if anlik_yuz_embedding is None:
@@ -363,21 +373,21 @@ def video_feed():
                 logger.error("Kamera karesi okunamadı! Belki kamera bağlantısı kesildi?")
                 break # Kare okunamıyorsa döngüyü kır.
             else:
-                yuzler = detect_faces(frame) # Simge: Yüzleri algılıyorum.
-                # Simge: Algılanan yüzlerin etrafına kutular çiziyorum, görsel geri bildirim önemli.
+                yuzler = detect_faces(frame) #Yüzleri algıla
+                # Algılanan yüzlerin etrafına kutular çizmek için
                 frame = draw_annotations(frame, yuzler) 
 
                 # Görüntüyü JPEG formatına kodlayıp byte'a çeviriyorum.
-                # Web tarayıcılarına stream etmek için bu format gerekiyor.
+            
                 ret, buffer = cv2.imencode('.jpg', frame)
                 frame = buffer.tobytes()
                 yield (b'--frame\r\n'
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
             
-            # Simge: Çok hızlı frame göndermemek için küçük bir gecikme ekledim,
-            # hem CPU'yu yormaz hem de akış daha stabil olur.
+            # Çok hızlı frame göndermemek için küçük bir gecikme ekledim,
+           
             time.sleep(0.01) 
 
-        cap.release() # Simge: Kamera kaynağını serbest bırakmak her zaman iyi bir alışkanlık.
+        cap.release()
 
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')

@@ -17,3 +17,7 @@ class Config:
     # Bu noktada %70 benzerlik eşiği belirledim çünkü daha düşük değerlerde false positive (yanlış pozitif) çok artıyordu.
     # Yani, tanımadığım kişileri tanıyabiliyordu. Bu değeri kendi testlerime göre ayarladım.
     DETECTION_CONFIDENCE = 0.70 
+    
+    # Simge: Flask uygulamasının çalışacağı portu buraya ekledim.
+    # Docker Compose'da 5001:5000 yapmıştık, yani konteyner içinde 5000'de çalışmalı.
+    FLASK_PORT = int(os.getenv('FLASK_PORT', 5000)) # .env'den al, yoksa 5000 varsayılan olsun
