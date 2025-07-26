@@ -3,19 +3,30 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-    <h1>Hoş Geldiniz, <span id="username-display"></span>!</h1>
-    <p>Giriş başarılı. Burası kişisel kontrol paneliniz.</p>
-    <p>Bu sayfada kullanıcının kendi profil bilgilerini görmesi, belki parolasını değiştirmesi gibi özellikler eklenebilir.</p>
+    <div class="text-center py-8">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">Hoş Geldiniz, <span id="username-display" class="text-blue-600"></span>!</h1>
+        <p class="text-lg text-gray-600 mb-6">Giriş başarılı. Burası kişisel kontrol paneliniz.</p>
+        <p class="text-md text-gray-500">
+            <!-- Simge: Buraya ileride kullanıcının kendi profil bilgilerini görmesi, parolasını değiştirmesi gibi özellikler eklenebilir. Şimdilik sadece bir karşılama ekranı. -->
+            Bu sayfayı daha kişisel hale getirmek için yeni özellikler üzerinde çalışıyorum!
+        </p>
+    </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
+    // Simge: Dashboard'a erişim için JWT token'ın varlığını kontrol ediyorum.
+    // Eğer token yoksa, kullanıcıyı giriş sayfasına yönlendiriyorum çünkü yetkisiz erişimi engellemek önemli.
     document.addEventListener('DOMContentLoaded', () => {
         const username = localStorage.getItem('username');
-        if (username) {
+        const token = localStorage.getItem('jwt_token'); // Token'ı da kontrol edelim
+
+        if (username && token) {
             document.getElementById('username-display').textContent = username;
         } else {
-            window.location.href = '/login'; // Kullanıcı adı yoksa giriş sayfasına yönlendir
+            // Simge: Token veya kullanıcı adı yoksa, kullanıcıyı direkt login sayfasına atıyorum.
+            // Güvenlik her şeyden önemli!
+            window.location.href = '/login'; 
         }
     });
 </script>

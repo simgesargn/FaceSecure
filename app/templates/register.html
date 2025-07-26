@@ -9,8 +9,10 @@
             width: 100%;
             max-width: 640px;
             margin: 20px auto;
-            border: 1px solid #ccc;
+            border: 1px solid #cbd5e1;
             background-color: #000;
+            border-radius: 0.75rem;
+            overflow: hidden;
         }
         #videoElement {
             width: 100%;
@@ -24,72 +26,79 @@
             width: 100%;
             height: 100%;
         }
-        #register-messages {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 5px;
-            text-align: center;
-        }
-        #register-messages.success {
-            background-color: #d4edda;
-            color: #155724;
-            border-color: #c3e6cb;
-        }
-        #register-messages.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border-color: #f5c6cb;
-        }
         .embedding-preview {
             display: inline-block;
             margin: 5px;
-            border: 1px solid #ddd;
+            border: 1px solid #e2e8f0;
             padding: 5px;
-            background-color: #f9f9f9;
+            background-color: #f8fafc;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
         .embedding-preview img {
             width: 100px;
             height: 100px;
             object-fit: cover;
             display: block;
+            border-radius: 0.25rem;
+        }
+        .embedding-preview span {
+            display: block;
+            text-align: center;
+            margin-top: 5px;
+            font-size: 0.875rem;
+            color: #64748b;
         }
     </style>
 {% endblock %}
 
 {% block content %}
-    <h1>Yeni Kullanıcı Kaydı (Admin Yetkili)</h1>
+    <h1 class="text-3xl font-semibold text-center mb-6">Yeni Kullanıcı Kaydı (Admin Yetkili)</h1>
 
-    <form id="register-form">
-        <div>
-            <label for="username">Kullanıcı Adı:</label>
-            <input type="text" id="username" name="username" required>
+    <form id="register-form" class="p-6 bg-gray-50 rounded-lg shadow-md">
+        <div class="mb-4">
+            <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Kullanıcı Adı:</label>
+            <input type="text" id="username" name="username" required
+                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
-        <div>
-            <label for="password">Parola:</label>
-            <input type="password" id="password" name="password" required>
+        <div class="mb-6">
+            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Parola:</label>
+            <input type="password" id="password" name="password" required
+                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline">
         </div>
 
-        <h3>Yüz Verisi Kaydı (10+ Farklı Poz)</h3>
-        <p>Lütfen kameraya bakın ve farklı açılardan (sağ, sol, yukarı, aşağı, gülümseme vb.) fotoğraf çekerek 10'dan fazla yüz verisi kaydedin.</p>
+        <h3 class="text-xl font-medium mb-4">Yüz Verisi Kaydı (10+ Farklı Poz)</h3>
+        <p class="text-gray-600 mb-4">
+            <!-- Simge: Burası çok önemli! Yüz tanıma modelinin iyi çalışması için farklı açılardan bolca veri toplamalıyız. -->
+            Lütfen kameraya bakın ve farklı açılardan (sağ, sol, yukarı, aşağı, gülümseme vb.) fotoğraf çekerek 10'dan fazla yüz verisi kaydedin.
+        </p>
         
         <div class="video-container">
-            <video id="videoElement" autoplay></video>
+            <video id="videoElement" autoplay class="rounded-lg"></video>
             <canvas id="canvasOverlay" class="canvas-overlay"></canvas>
         </div>
         
-        <button type="button" id="capture-btn">Yüz Kaydet</button>
-        <p>Kaydedilen Yüz Sayısı: <span id="face-count">0</span></p>
-        <div id="embedding-previews">
-            </div>
+        <button type="button" id="capture-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full mt-4">
+            Yüz Kaydet
+        </button>
+        <p class="text-gray-700 mt-4">Kaydedilen Yüz Sayısı: <span id="face-count" class="font-bold text-blue-600">0</span></p>
+        <div id="embedding-previews" class="flex flex-wrap gap-2 mt-4">
+            <!-- Önizlemeler buraya gelecek -->
+        </div>
         <br>
-        <button type="submit" id="submit-registration" disabled>Kullanıcıyı Kaydet</button>
+        <button type="submit" id="submit-registration" disabled
+                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full mt-6">
+            Kullanıcıyı Kaydet
+        </button>
     </form>
-    <div id="register-messages"></div>
+    <div id="register-messages" class="mt-4"></div>
 
 {% endblock %}
 
 {% block scripts %}
 <script>
+    // Simge: Bu script, yeni kullanıcı kaydı ve yüz verisi toplama sihirbazımız!
+    // Her adımda kullanıcıya net geri bildirim vermek çok önemli.
     const registerForm = document.getElementById('register-form');
     const captureBtn = document.getElementById('capture-btn');
     const videoElement = document.getElementById('videoElement');
@@ -101,10 +110,10 @@
     const registerMessagesDiv = document.getElementById('register-messages');
 
     let stream;
-    let faceEmbeddings = [];
-    let capturedImages = []; // Önizleme için resimleri tutar
+    let faceEmbeddings = []; // Topladığımız yüz embeddinglerini burada tutuyoruz.
+    let capturedImages = []; // Önizleme için çektiğimiz resimleri saklıyorum.
 
-    // Show messages
+    // Mesajları göstermek için küçük bir yardımcı fonksiyon.
     function showMessage(message, type) {
         registerMessagesDiv.textContent = message;
         registerMessagesDiv.className = `message ${type}`;
@@ -115,6 +124,7 @@
     }
 
     // Kamerayı Başlat
+    // Kullanıcı sayfayı açtığında kamera otomatik başlasın, böylece hemen yüz kaydetmeye başlayabilir.
     async function startCamera() {
         try {
             stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -123,8 +133,6 @@
                 videoElement.play();
                 canvasOverlay.width = videoElement.videoWidth;
                 canvasOverlay.height = videoElement.videoHeight;
-                // Live detection (optional, can be performance heavy)
-                // setInterval(drawFaceRectangles, 100);
             };
         } catch (err) {
             console.error("Kameraya erişim reddedildi veya hata oluştu: ", err);
@@ -133,6 +141,8 @@
     }
 
     // Yüz Kaydet Butonu İşlemi
+    // Bu butona her tıklandığında, kameradan bir kare alıp sunucuya gönderiyorum.
+    // Sunucu, bu karedeki yüzün embedding'ini çıkarıp bana geri gönderecek.
     captureBtn.addEventListener('click', async () => {
         if (!stream) {
             showMessage("Kamera başlatılmadı. Lütfen önce kamerayı başlatın.", 'error');
@@ -146,11 +156,12 @@
 
         // Geçerli kareyi al ve Base64'e dönüştür
         context.drawImage(videoElement, 0, 0, canvasOverlay.width, canvasOverlay.height);
-        const imageData = canvasOverlay.toDataURL('image/jpeg', 0.9);
+        const imageData = canvasOverlay.toDataURL('image/jpeg', 0.9); // Yüksek kalite, daha iyi tanıma için
 
-        // Sunucuya yüz tespiti ve embedding için gönder
         try {
-            const response = await fetch('/api/auth/login/face', { 
+            // Simge: Burası kritik! Yüz embedding'ini almak için yeni bir API endpoint'i çağırıyorum.
+            // Eskiden login endpoint'ini kullanıyorduk, bu mantıksızdı. Şimdi daha temiz oldu.
+            const response = await fetch('/api/utils/extract_embedding', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -160,38 +171,39 @@
 
             const data = await response.json();
 
-            if (response.ok && data.message === 'Giriş başarılı!') {
-                
-                // MOCK data (Gerçekte backend'den gelmeli):
-                const mockEmbedding = Array(128).fill(Math.random()); 
-                faceEmbeddings.push(mockEmbedding);
-                
-                capturedImages.push(imageData); // Önizleme için resmi sakla
-                updateFaceCount();
-                renderPreviews();
-                showMessage('Yüz başarıyla kaydedildi!', 'success');
-            } else if (data.message === 'Yüz algılanmadı.' || data.message.includes('Birden fazla yüz')) {
-                showMessage(data.message, 'error');
+            if (response.ok) {
+                if (data.embedding) {
+                    faceEmbeddings.push(data.embedding); // Sunucudan gelen gerçek embedding'i kaydediyorum.
+                    capturedImages.push(imageData); // Önizleme için resmi sakla
+                    updateFaceCount();
+                    renderPreviews();
+                    showMessage('Yüz başarıyla kaydedildi!', 'success');
+                } else if (data.message) {
+                    // Simge: Sunucu yüz bulamazsa veya birden fazla yüz görürse bana mesaj gönderecek.
+                    showMessage(data.message, 'error');
+                }
             } else {
                 showMessage(`Yüz kaydı başarısız: ${data.message}`, 'error');
             }
         } catch (error) {
             console.error('Yüz kaydetme hatası:', error);
-            showMessage('Yüz kaydı sırasında bir hata oluştu.', 'error');
+            showMessage('Yüz kaydı sırasında bir hata oluştu. Lütfen tekrar deneyin.', 'error');
         }
     });
 
+    // Kaydedilen yüz sayısını güncelliyorum ve "Kullanıcıyı Kaydet" butonunu aktif ediyorum.
     function updateFaceCount() {
         faceCountSpan.textContent = faceEmbeddings.length;
         if (faceEmbeddings.length >= 10) {
-            submitRegistrationBtn.disabled = false;
+            submitRegistrationBtn.disabled = false; // 10'dan fazla yüz olunca butonu aktif et.
         } else {
             submitRegistrationBtn.disabled = true;
         }
     }
 
+    // Kaydedilen yüzlerin önizlemelerini gösteriyorum. Kullanıcının ne kaydettiğini görmesi güzel oluyor.
     function renderPreviews() {
-        embeddingPreviewsDiv.innerHTML = '';
+        embeddingPreviewsDiv.innerHTML = ''; // Önceki önizlemeleri temizle
         capturedImages.forEach((imgData, index) => {
             const div = document.createElement('div');
             div.className = 'embedding-preview';
@@ -206,6 +218,7 @@
     }
 
     // Kullanıcı Kayıt Formu Submit İşlemi
+    // Topladığımız yüz verilerini ve kullanıcı bilgilerini sunucuya gönderiyorum.
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -216,10 +229,13 @@
 
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-        const adminToken = localStorage.getItem('jwt_token'); // Admin token'ını al
+        // Simge: Admin token'ı olmadan yeni kullanıcı ekleyemeyiz, bu yüzden localStorage'dan çekiyorum.
+        const adminToken = localStorage.getItem('jwt_token'); 
 
         if (!adminToken) {
             showMessage("Kayıt işlemi için admin yetkisi gereklidir. Lütfen admin olarak giriş yapın.", 'error');
+            // Simge: Eğer token yoksa, kullanıcıyı login sayfasına yönlendiriyorum.
+            window.location.href = '/login'; 
             return;
         }
 
@@ -228,12 +244,12 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${adminToken}` // Admin token'ını gönder
+                    'Authorization': `Bearer ${adminToken}` // Admin token'ını gönderiyorum.
                 },
                 body: JSON.stringify({
                     username,
                     password,
-                    face_embeddings: faceEmbeddings // Gönderilen embeddingler
+                    face_embeddings: faceEmbeddings // Topladığımız embedding'leri gönderiyorum.
                 })
             });
 
@@ -241,7 +257,8 @@
 
             if (response.ok) {
                 showMessage(data.message, 'success');
-                faceEmbeddings = []; // Kayıt sonrası sıfırla
+                // Kayıt başarılı olursa form ve önizlemeleri sıfırlıyorum, yeni kayıt için hazır olsun.
+                faceEmbeddings = []; 
                 capturedImages = [];
                 updateFaceCount();
                 renderPreviews();
@@ -256,10 +273,10 @@
         }
     });
 
-    // Sayfa yüklendiğinde kamerayı başlat
+    // Sayfa yüklendiğinde kamerayı başlatıyorum.
     document.addEventListener('DOMContentLoaded', startCamera);
 
-    // Sayfadan ayrılırken kamerayı durdur
+    // Sayfadan ayrılırken kamerayı durdurmak, kaynakları serbest bırakmak için iyi bir alışkanlık.
     window.addEventListener('beforeunload', () => {
         if (stream) {
             stream.getTracks().forEach(track => track.stop());

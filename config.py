@@ -11,3 +11,9 @@ class Config:
     ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
     LOG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs', 'access.log')
+    
+    # Simge: Yüz tanıma eşiği. Bu değeri %0 ile %1 arasında tutuyorum.
+    # %0.70 demek %70 benzerlik ve üzeri kabul edilecek demek.
+    # Bu noktada %70 benzerlik eşiği belirledim çünkü daha düşük değerlerde false positive (yanlış pozitif) çok artıyordu.
+    # Yani, tanımadığım kişileri tanıyabiliyordu. Bu değeri kendi testlerime göre ayarladım.
+    DETECTION_CONFIDENCE = 0.70 

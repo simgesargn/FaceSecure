@@ -100,3 +100,37 @@
 2025-07-25 23:22:48.375 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
 2025-07-25 23:24:16.432 | INFO     | app.routes:login_with_password:138 - Kullanıcı 'admin' parola ile başarıyla giriş yaptı. IP: 172.18.0.1
 2025-07-25 23:27:26.859 | INFO     | app.routes:login_with_password:138 - Kullanıcı 'admin' parola ile başarıyla giriş yaptı. IP: 172.18.0.1
+2025-07-25 23:56:34.136 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-25 23:56:34.144 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-26 00:01:19.039 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-26 00:01:19.043 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-26 00:01:29.024 | ERROR    | app.routes:login_with_face:221 - Yüzle giriş sırasında hata: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+
+2025-07-26 00:01:29.027 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-26 00:10:08.755 | INFO     | app.utils:<module>:12 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-26 00:10:08.772 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-26 00:12:37.667 | INFO     | app.utils:<module>:12 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-26 00:12:37.674 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-26 00:13:12.100 | INFO     | app.utils:<module>:12 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-26 00:13:12.105 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-26 00:13:17.556 | INFO     | __main__:create_admin_user_if_not_exists:23 - Admin kullanıcısı zaten mevcut.
+2025-07-26 00:13:26.683 | ERROR    | app.routes:login_with_face:253 - Yüzle giriş sırasında beklenmedik bir hata oluştu: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+. IP: 172.18.0.1
+2025-07-26 00:13:26.691 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-26 00:13:38.768 | ERROR    | app.routes:extract_embedding_api:299 - Embedding çıkarımı sırasında beklenmedik bir hata oluştu: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+. IP: 172.18.0.1
+2025-07-26 00:13:40.694 | ERROR    | app.routes:extract_embedding_api:299 - Embedding çıkarımı sırasında beklenmedik bir hata oluştu: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+. IP: 172.18.0.1
+2025-07-26 00:13:45.116 | ERROR    | app.routes:extract_embedding_api:299 - Embedding çıkarımı sırasında beklenmedik bir hata oluştu: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+. IP: 172.18.0.1
+2025-07-26 00:15:43.929 | ERROR    | app.routes:extract_embedding_api:299 - Embedding çıkarımı sırasında beklenmedik bir hata oluştu: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+. IP: 172.18.0.1
+2025-07-26 10:49:03.287 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-26 10:49:03.292 | WARNING  | app.routes:login_with_face:204 - Birden fazla yüz algılandı. Giriş reddedildi. IP: 172.18.0.1
+2025-07-26 10:57:11.182 | WARNING  | app.models:log_attempt:103 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-26 10:57:11.188 | WARNING  | app.routes:login_with_face:200 - Yüz algılanmadı. Giriş reddedildi. IP: 172.18.0.1
+2025-07-26 10:57:19.983 | WARNING  | app.routes:extract_embedding_api:281 - Embedding çıkarımı için yüz algılanmadı. IP: 172.18.0.1
+2025-07-26 10:58:20.596 | ERROR    | app.routes:extract_embedding_api:299 - Embedding çıkarımı sırasında beklenmedik bir hata oluştu: OpenCV(4.12.0) /io/opencv/modules/imgproc/src/resize.cpp:3845: error: (-215:Assertion failed) !dsize.empty() in function 'resize'
+. IP: 172.18.0.1

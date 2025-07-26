@@ -3,8 +3,10 @@
 {% block title %}Anasayfa{% endblock %}
 
 {% block content %}
-    <h1>FaceSecure'a Hoş Geldiniz!</h1>
-    <p>Yüz tanıma tabanlı güvenli kimlik doğrulama sisteminiz.</p>
-    <p><a href="/login">Giriş yapmak için tıklayın.</a></p>
-    <p><a href="/register">Yeni kullanıcı kaydı için tıklayın (Admin Yetkili).</a></p>
+    <h1 class="text-4xl font-bold text-center mb-6">TutiSecure'a Hoş Geldiniz!</h1>
+    <p class="text-lg text-center text-gray-700 mb-8">Yüz tanıma tabanlı güvenli kimlik doğrulama sisteminiz.</p>
+    <div class="flex flex-col items-center space-y-4">
+        <a href="/login" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">Giriş yapmak için tıklayınız.</a>
+        <a href="/register" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">Yeni kullanıcı kaydı için tıklayınız.</a>
+    </div>
 {% endblock %}
