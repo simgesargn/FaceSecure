@@ -6,7 +6,7 @@ Ben Simge. Bu proje Acunmedya Akademi’deki bitirme projem olarak geliştirdiğ
 Bu projeyi geliştirirken hem teknik hem de kişisel olarak çok şey öğrendim. Karşıma çıkan her hatada bir adım daha ileri gittim. Umarım siz de hem fikirden hem de emekten keyif alırsınız.
 
 Proje Hakkında
-SMGSecure, kullanıcıların yüzlerini kullanarak sisteme güvenli bir şekilde giriş yapmasını sağlayan bir kimlik doğrulama sistemidir.
+TutiSecure, kullanıcıların yüzlerini kullanarak sisteme güvenli bir şekilde giriş yapmasını sağlayan bir kimlik doğrulama sistemidir.
 Python tabanlı Flask web framework, MongoDB veritabanı, TensorFlow, MediaPipe ve FaceNet gibi teknolojilerle geliştirildi. 
 Docker desteği sayesinde kurulumu ve çalıştırılması oldukça kolaydır.
 
@@ -57,8 +57,8 @@ Git
 Adımlar:
 
 Projeyi klonlayın:
-git clone https://github.com/kullaniciadi/SMGSecure.git
-cd SMGSecure
+git 
+cd TutiSecure
 
 .env dosyasını oluşturun ve şu bilgileri ekleyin:
 SECRET_KEY='gizli-bir-key'
