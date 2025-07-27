@@ -2,16 +2,19 @@
 
 {% block title %}Giriş Yap{% endblock %}
 
+
+
 {% block head %}
     <style>
+
         .video-container {
             position: relative;
             width: 100%;
             max-width: 640px;
             margin: 20px auto;
-            border: 1px solid #cbd5e1; /* Tailwind border-gray-300 */
+            border: 1px solid #cbd5e1; 
             background-color: #000;
-            border-radius: 0.75rem; /* rounded-lg */
+            border-radius: 0.75rem; 
             overflow: hidden; /* Video köşeleri için */
         }
         #videoElement {
@@ -35,6 +38,7 @@
     <div class="mb-8 p-6 bg-gray-50 rounded-lg shadow-md">
         <h2 class="text-2xl font-medium mb-4">Parola ile Giriş</h2>
         <form id="password-login-form">
+
             <div class="mb-4">
                 <label for="login-username" class="block text-gray-700 text-sm font-bold mb-2">Kullanıcı Adı:</label>
                 <input type="text" id="login-username" name="username" required
@@ -75,8 +79,8 @@
 
 {% block scripts %}
 <script>
-    // Simge: Merhaba! Bu script, giriş sayfasındaki parola ve yüz tanıma ile giriş işlemlerini yönetiyor.
-    // Kullanıcı deneyimini pürüzsüz hale getirmek için çok uğraştım! :)
+    // giriş sayfasındaki parola ve yüz tanıma ile giriş işlemlerini yönetmek için
+
     const passwordLoginForm = document.getElementById('password-login-form');
     const faceLoginBtn = document.getElementById('face-login-btn');
     const videoElement = document.getElementById('videoElement');
@@ -86,24 +90,24 @@
     const faceLoginUsernameHint = document.getElementById('face-login-username-hint');
 
     let stream;
-    let captureInterval; // Şimdilik kullanılmasa da, canlı algılama için bir gün lazım olabilir.
+    let captureInterval; 
 
-    // Mesajları kullanıcıya göstermek için küçük bir yardımcı fonksiyon.
-    // Hataları ve başarıları daha anlaşılır kılıyor.
+    // Mesajları kullanıcıya göstermek için 
+    
     function showMessage(message, type) {
         loginMessagesDiv.textContent = message;
         loginMessagesDiv.className = `message ${type}`;
-        // Mesajın 5 saniye sonra kaybolmasını sağlıyorum, kullanıcıyı rahatsız etmesin.
+        // Mesaj 5 saniye sonra kaybolsun
         setTimeout(() => {
             loginMessagesDiv.textContent = '';
             loginMessagesDiv.className = 'message';
         }, 5000); 
     }
 
-    // Parola ile Giriş Formu Submit İşlemi
-    // Bu kısım, kullanıcı adı ve parola ile giriş yapmayı dener.
+    // Parola ile giriş formusubmit işlemi
+    
     passwordLoginForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Formun varsayılan gönderimini engelle, API çağrısını biz yapalım.
+        e.preventDefault(); 
         const username = document.getElementById('login-username').value;
         const password = document.getElementById('login-password').value;
 
@@ -118,28 +122,28 @@
 
             const data = await response.json();
 
+
             if (response.ok) {
-                // Simge: Giriş başarılıysa, JWT token'ı ve kullanıcı adını localStorage'a kaydediyorum.
-                // Bu token, diğer korumalı sayfalara erişim için kullanılacak.
+              
                 localStorage.setItem('jwt_token', data.token);
                 localStorage.setItem('username', data.username);
                 showMessage(data.message, 'success');
-                // Simge: Başarılı girişten sonra dashboard'a yönlendiriyorum.
-                // Bu yönlendirme, token'ın localStorage'da olduğu anda gerçekleşiyor.
+                //  Başarılı girişten sonra dashboard'a yönlendir
+               
                 window.location.href = '/dashboard'; 
             } else {
-                // Hatalı giriş durumunda kullanıcıya hata mesajı gösteriyorum.
+                // Hatalı giriş durumunda kullanıcıya hata mesajı göster
                 showMessage(data.message, 'error');
             }
         } catch (error) {
-            // Ağ veya sunucu tarafında bir sorun oluşursa konsola yazıp kullanıcıya bilgi veriyorum.
+            
             console.error('Login error:', error);
             showMessage('Bir hata oluştu. Lütfen tekrar deneyin.', 'error');
         }
     });
 
     // Kamerayı Başlat
-    // Kullanıcı sayfayı açtığında kamera otomatik başlasın istedim, daha pratik oluyor.
+
     async function startCamera() {
         try {
             stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -156,8 +160,7 @@
     }
 
     // Yüz ile Giriş Butonu İşlemi
-    // Kullanıcı butona tıkladığında kameradan anlık görüntüyü alıp yüz tanıma için sunucuya gönderiyorum.
-    // Sunucu, bu karedeki yüzün embedding'ini çıkarıp bana geri gönderecek.
+   
     faceLoginBtn.addEventListener('click', async () => {
         if (!stream) {
             showMessage("Kamera başlatılmadı. Lütfen önce kamerayı başlatın.", 'error');
@@ -169,11 +172,11 @@
             return;
         }
 
-        // Geçerli kareyi al ve Base64'e dönüştür
+        // Geçerli kareyi al Base64'e dönüştür
         context.drawImage(videoElement, 0, 0, canvasOverlay.width, canvasOverlay.height);
-        const imageData = canvasOverlay.toDataURL('image/jpeg', 0.9); // Yüksek kalite
+        const imageData = canvasOverlay.toDataURL('image/jpeg', 0.9); 
 
-        const usernameHint = faceLoginUsernameHint.value.trim(); // Kullanıcı ipucunu alıyorum.
+        const usernameHint = faceLoginUsernameHint.value.trim(); // Kullanıcı ipucu
 
         try {
             const response = await fetch('/api/auth/login/face', {
@@ -187,14 +190,14 @@
             const data = await response.json();
 
             if (response.ok) {
-                // Simge: Yüz tanıma ile giriş başarılıysa token ve kullanıcı adını kaydediyorum.
+                
                 localStorage.setItem('jwt_token', data.token);
                 localStorage.setItem('username', data.username);
                 showMessage(`${data.message} Benzerlik: %${data.similarity}`, 'success');
-                // stopCamera(); // Giriş başarılıysa kamerayı durdurmak mantıklı olabilir, ama şimdilik yorumda kalsın.
+                
                 window.location.href = '/dashboard';
             } else {
-                // Yüz tanıma başarısız olursa ilgili hata mesajını gösteriyorum.
+              
                 showMessage(data.message, 'error');
             }
         } catch (error) {
@@ -203,12 +206,12 @@
         }
     });
 
-    // Sayfa yüklendiğinde kamerayı başlatıyorum.
+    // Sayfa yüklendiğinde kamerayı başlat
     document.addEventListener('DOMContentLoaded', () => {
         startCamera();
     });
 
-    // Sayfadan ayrılırken kamerayı durdurmak, kaynakları serbest bırakmak için iyi bir alışkanlık.
+
     window.addEventListener('beforeunload', () => {
         if (stream) {
             stream.getTracks().forEach(track => track.stop());

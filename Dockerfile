@@ -1,10 +1,12 @@
 # Python tabanlı bir base imajı kullan
+
 FROM python:3.9-slim-bullseye
 
 # Çalışma dizinini ayarla
 WORKDIR /app
 
-# Sistemsel bağımlılıkları yükle (OpenCV için gerekli)
+# Sistemsel bağımlılıkları yükle 
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
@@ -25,6 +27,8 @@ RUN apt-get update && \
     libxext6 \       
     libxrender1 \     
     && rm -rf /var/lib/apt/lists/*
+
+    
 
 # Python bağımlılıklarını kopyala ve yükle
 COPY requirements.txt .

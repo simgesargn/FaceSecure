@@ -69,7 +69,7 @@
 
         <h3 class="text-xl font-medium mb-4">Yüz Verisi Kaydı (10+ Farklı Poz)</h3>
         <p class="text-gray-600 mb-4">
-            <!-- Simge: Burası çok önemli! Yüz tanıma modelinin iyi çalışması için farklı açılardan bolca veri toplamalıyız. -->
+
             Lütfen kameraya bakın ve farklı açılardan (sağ, sol, yukarı, aşağı, gülümseme vb.) fotoğraf çekerek 10'dan fazla yüz verisi kaydedin.
         </p>
         
@@ -83,7 +83,8 @@
         </button>
         <p class="text-gray-700 mt-4">Kaydedilen Yüz Sayısı: <span id="face-count" class="font-bold text-blue-600">0</span></p>
         <div id="embedding-previews" class="flex flex-wrap gap-2 mt-4">
-            <!-- Önizlemeler buraya gelecek -->
+           
+
         </div>
         <br>
         <button type="submit" id="submit-registration" disabled
@@ -97,8 +98,8 @@
 
 {% block scripts %}
 <script>
-    // Simge: Bu script, yeni kullanıcı kaydı ve yüz verisi toplama sihirbazımız!
-    // Her adımda kullanıcıya net geri bildirim vermek çok önemli.
+    // yeni kullanıcı kaydı ve yüz verisi toplamak için
+   
     const registerForm = document.getElementById('register-form');
     const captureBtn = document.getElementById('capture-btn');
     const videoElement = document.getElementById('videoElement');
@@ -110,10 +111,10 @@
     const registerMessagesDiv = document.getElementById('register-messages');
 
     let stream;
-    let faceEmbeddings = []; // Topladığımız yüz embeddinglerini burada tutuyoruz.
-    let capturedImages = []; // Önizleme için çektiğimiz resimleri saklıyorum.
+    let faceEmbeddings = []; // Topladığımız yüzler burada tutulacak
+    let capturedImages = []; 
 
-    // Mesajları göstermek için küçük bir yardımcı fonksiyon.
+    // Mesajları göstermek için yardımcı fonksiyon
     function showMessage(message, type) {
         registerMessagesDiv.textContent = message;
         registerMessagesDiv.className = `message ${type}`;
@@ -124,7 +125,7 @@
     }
 
     // Kamerayı Başlat
-    // Kullanıcı sayfayı açtığında kamera otomatik başlasın, böylece hemen yüz kaydetmeye başlayabilir.
+
     async function startCamera() {
         try {
             stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -141,8 +142,7 @@
     }
 
     // Yüz Kaydet Butonu İşlemi
-    // Bu butona her tıklandığında, kameradan bir kare alıp sunucuya gönderiyorum.
-    // Sunucu, bu karedeki yüzün embedding'ini çıkarıp bana geri gönderecek.
+  
     captureBtn.addEventListener('click', async () => {
         if (!stream) {
             showMessage("Kamera başlatılmadı. Lütfen önce kamerayı başlatın.", 'error');
@@ -156,11 +156,10 @@
 
         // Geçerli kareyi al ve Base64'e dönüştür
         context.drawImage(videoElement, 0, 0, canvasOverlay.width, canvasOverlay.height);
-        const imageData = canvasOverlay.toDataURL('image/jpeg', 0.9); // Yüksek kalite, daha iyi tanıma için
+        const imageData = canvasOverlay.toDataURL('image/jpeg', 0.9); 
 
         try {
-            // Simge: Burası kritik! Yüz embedding'ini almak için yeni bir API endpoint'i çağırıyorum.
-            // Eskiden login endpoint'ini kullanıyorduk, bu mantıksızdı. Şimdi daha temiz oldu.
+            
             const response = await fetch('/api/utils/extract_embedding', { 
                 method: 'POST',
                 headers: {
@@ -173,13 +172,13 @@
 
             if (response.ok) {
                 if (data.embedding) {
-                    faceEmbeddings.push(data.embedding); // Sunucudan gelen gerçek embedding'i kaydediyorum.
-                    capturedImages.push(imageData); // Önizleme için resmi sakla
+                    faceEmbeddings.push(data.embedding); 
+                    capturedImages.push(imageData); 
                     updateFaceCount();
                     renderPreviews();
                     showMessage('Yüz başarıyla kaydedildi!', 'success');
                 } else if (data.message) {
-                    // Simge: Sunucu yüz bulamazsa veya birden fazla yüz görürse bana mesaj gönderecek.
+                   
                     showMessage(data.message, 'error');
                 }
             } else {
@@ -191,19 +190,19 @@
         }
     });
 
-    // Kaydedilen yüz sayısını güncelliyorum ve "Kullanıcıyı Kaydet" butonunu aktif ediyorum.
+    
     function updateFaceCount() {
         faceCountSpan.textContent = faceEmbeddings.length;
         if (faceEmbeddings.length >= 10) {
-            submitRegistrationBtn.disabled = false; // 10'dan fazla yüz olunca butonu aktif et.
+            submitRegistrationBtn.disabled = false; 
         } else {
             submitRegistrationBtn.disabled = true;
         }
     }
 
-    // Kaydedilen yüzlerin önizlemelerini gösteriyorum. Kullanıcının ne kaydettiğini görmesi güzel oluyor.
+   
     function renderPreviews() {
-        embeddingPreviewsDiv.innerHTML = ''; // Önceki önizlemeleri temizle
+        embeddingPreviewsDiv.innerHTML = ''; 
         capturedImages.forEach((imgData, index) => {
             const div = document.createElement('div');
             div.className = 'embedding-preview';
@@ -218,7 +217,7 @@
     }
 
     // Kullanıcı Kayıt Formu Submit İşlemi
-    // Topladığımız yüz verilerini ve kullanıcı bilgilerini sunucuya gönderiyorum.
+    
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -229,12 +228,12 @@
 
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-        // Simge: Admin token'ı olmadan yeni kullanıcı ekleyemeyiz, bu yüzden localStorage'dan çekiyorum.
+        
         const adminToken = localStorage.getItem('jwt_token'); 
 
         if (!adminToken) {
             showMessage("Kayıt işlemi için admin yetkisi gereklidir. Lütfen admin olarak giriş yapın.", 'error');
-            // Simge: Eğer token yoksa, kullanıcıyı login sayfasına yönlendiriyorum.
+         
             window.location.href = '/login'; 
             return;
         }
@@ -244,12 +243,12 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${adminToken}` // Admin token'ını gönderiyorum.
+                    'Authorization': `Bearer ${adminToken}` 
                 },
                 body: JSON.stringify({
                     username,
                     password,
-                    face_embeddings: faceEmbeddings // Topladığımız embedding'leri gönderiyorum.
+                    face_embeddings: faceEmbeddings 
                 })
             });
 
@@ -257,7 +256,7 @@
 
             if (response.ok) {
                 showMessage(data.message, 'success');
-                // Kayıt başarılı olursa form ve önizlemeleri sıfırlıyorum, yeni kayıt için hazır olsun.
+                // Kayıt başarılı olursa  hazır olsun
                 faceEmbeddings = []; 
                 capturedImages = [];
                 updateFaceCount();
@@ -273,10 +272,10 @@
         }
     });
 
-    // Sayfa yüklendiğinde kamerayı başlatıyorum.
+    // Sayfa yüklendiğinde kamerayı başlat
     document.addEventListener('DOMContentLoaded', startCamera);
 
-    // Sayfadan ayrılırken kamerayı durdurmak, kaynakları serbest bırakmak için iyi bir alışkanlık.
+    // Sayfadan ayrılırken kamerayı durdurmak
     window.addEventListener('beforeunload', () => {
         if (stream) {
             stream.getTracks().forEach(track => track.stop());

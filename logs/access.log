@@ -315,3 +315,78 @@
 2025-07-26 20:49:18.766 | WARNING  | app.routes:login_with_password:170 - Kullanıcı 'simgesargnn' parola ile giriş yapamadı. IP: 172.18.0.1
 2025-07-26 20:49:20.519 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'simgesargnn', IP: 172.18.0.1
 2025-07-26 20:49:20.520 | WARNING  | app.routes:login_with_password:170 - Kullanıcı 'simgesargnn' parola ile giriş yapamadı. IP: 172.18.0.1
+2025-07-26 21:53:31.015 | INFO     | app.utils:<module>:11 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-26 21:53:31.022 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-26 21:53:31.034 | INFO     | __main__:<module>:39 - Waitress sunucusu başlatılıyor. Dinlenen port: 5000
+2025-07-26 21:53:42.847 | INFO     | __main__:create_admin_user_if_not_exists:26 - Admin kullanıcısı zaten mevcut.
+2025-07-26 21:53:42.849 | INFO     | __main__:create_admin_user_if_not_exists:29 - Uygulama başlangıç ön-işlemleri tamamlandı.
+2025-07-26 21:53:50.909 | ERROR    | app.routes:login_with_face:258 - Yüzle giriş sırasında beklenmedik bir hata oluştu: Collection objects do not implement truth value testing or bool(). Please compare with None instead: collection is not None. IP: 172.18.0.1
+2025-07-26 21:53:50.916 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-26 21:54:14.149 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 21:54:16.367 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 21:54:18.547 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 21:54:21.467 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 21:54:22.963 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 21:54:38.106 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 21:54:40.104 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 21:54:41.760 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 21:54:44.889 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 21:54:48.823 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 21:54:49.908 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 21:55:03.240 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'sido', IP: 172.18.0.1
+2025-07-26 21:55:03.242 | WARNING  | app.routes:login_with_password:170 - Kullanıcı 'sido' parola ile giriş yapamadı. IP: 172.18.0.1
+2025-07-26 21:55:04.511 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'sido', IP: 172.18.0.1
+2025-07-26 21:55:04.511 | WARNING  | app.routes:login_with_password:170 - Kullanıcı 'sido' parola ile giriş yapamadı. IP: 172.18.0.1
+2025-07-26 21:55:04.995 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'sido', IP: 172.18.0.1
+2025-07-26 21:55:04.996 | WARNING  | app.routes:login_with_password:170 - Kullanıcı 'sido' parola ile giriş yapamadı. IP: 172.18.0.1
+2025-07-26 21:55:05.195 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'sido', IP: 172.18.0.1
+2025-07-26 21:55:05.196 | WARNING  | app.routes:login_with_password:170 - Kullanıcı 'sido' parola ile giriş yapamadı. IP: 172.18.0.1
+2025-07-26 21:55:05.361 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'sido', IP: 172.18.0.1
+2025-07-26 21:55:05.362 | WARNING  | app.routes:login_with_password:170 - Kullanıcı 'sido' parola ile giriş yapamadı. IP: 172.18.0.1
+2025-07-26 21:55:13.774 | ERROR    | app.routes:login_with_face:258 - Yüzle giriş sırasında beklenmedik bir hata oluştu: Collection objects do not implement truth value testing or bool(). Please compare with None instead: collection is not None. IP: 172.18.0.1
+2025-07-26 21:55:13.776 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-26 21:55:19.577 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'sido', IP: 172.18.0.1
+2025-07-26 21:55:19.578 | WARNING  | app.routes:login_with_password:170 - Kullanıcı 'sido' parola ile giriş yapamadı. IP: 172.18.0.1
+2025-07-26 21:55:20.164 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'sido', IP: 172.18.0.1
+2025-07-26 21:55:20.165 | WARNING  | app.routes:login_with_password:170 - Kullanıcı 'sido' parola ile giriş yapamadı. IP: 172.18.0.1
+2025-07-26 21:55:20.576 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'sido', IP: 172.18.0.1
+2025-07-26 21:55:20.577 | WARNING  | app.routes:login_with_password:170 - Kullanıcı 'sido' parola ile giriş yapamadı. IP: 172.18.0.1
+2025-07-26 21:55:20.777 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'sido', IP: 172.18.0.1
+2025-07-26 21:55:20.778 | WARNING  | app.routes:login_with_password:170 - Kullanıcı 'sido' parola ile giriş yapamadı. IP: 172.18.0.1
+2025-07-26 21:55:29.133 | ERROR    | app.routes:login_with_face:258 - Yüzle giriş sırasında beklenmedik bir hata oluştu: Collection objects do not implement truth value testing or bool(). Please compare with None instead: collection is not None. IP: 172.18.0.1
+2025-07-26 21:55:29.146 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-26 21:55:45.603 | ERROR    | app.routes:login_with_face:258 - Yüzle giriş sırasında beklenmedik bir hata oluştu: Collection objects do not implement truth value testing or bool(). Please compare with None instead: collection is not None. IP: 172.18.0.1
+2025-07-26 21:55:45.609 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-26 21:56:06.262 | ERROR    | app.routes:login_with_face:258 - Yüzle giriş sırasında beklenmedik bir hata oluştu: Collection objects do not implement truth value testing or bool(). Please compare with None instead: collection is not None. IP: 172.18.0.1
+2025-07-26 21:56:06.266 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-26 21:56:26.355 | ERROR    | app.routes:login_with_face:258 - Yüzle giriş sırasında beklenmedik bir hata oluştu: Collection objects do not implement truth value testing or bool(). Please compare with None instead: collection is not None. IP: 172.18.0.1
+2025-07-26 21:56:26.360 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-26 22:29:59.279 | INFO     | app.utils:<module>:11 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-26 22:29:59.286 | INFO     | app:create_app:18 - Flask uygulaması başlatıldı.
+2025-07-26 22:29:59.297 | INFO     | __main__:<module>:39 - Waitress sunucusu başlatılıyor. Dinlenen port: 5000
+2025-07-26 22:30:02.640 | INFO     | __main__:create_admin_user_if_not_exists:26 - Admin kullanıcısı zaten mevcut.
+2025-07-26 22:30:02.642 | INFO     | __main__:create_admin_user_if_not_exists:29 - Uygulama başlangıç ön-işlemleri tamamlandı.
+2025-07-26 23:10:33.303 | INFO     | app.routes:login_with_password:166 - Kullanıcı 'simge' parola ile başarıyla giriş yaptı. IP: 172.18.0.1
+2025-07-26 23:15:08.723 | INFO     | app.routes:login_with_password:166 - Kullanıcı 'simge' parola ile başarıyla giriş yaptı. IP: 172.18.0.1
+2025-07-26 23:15:45.126 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 23:15:45.662 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 23:15:46.083 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 23:15:52.303 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 23:15:53.343 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 23:15:54.327 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 23:15:55.247 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 23:15:56.742 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 23:15:57.606 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 23:15:58.429 | INFO     | app.routes:extract_embedding_api:305 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1
+2025-07-26 23:16:00.464 | INFO     | app.models:create_user:40 - Kullanıcı 'uphawu' başarıyla oluşturuldu. ID: 688561b0da311fe393b9c28c
+2025-07-26 23:16:00.465 | INFO     | app.routes:register:146 - Yeni kullanıcı 'uphawu' başarıyla kaydedildi.
+2025-07-26 23:16:15.670 | ERROR    | app.routes:login_with_face:258 - Yüzle giriş sırasında beklenmedik bir hata oluştu: Collection objects do not implement truth value testing or bool(). Please compare with None instead: collection is not None. IP: 172.18.0.1
+2025-07-26 23:16:15.681 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-26 23:16:18.844 | ERROR    | app.routes:login_with_face:258 - Yüzle giriş sırasında beklenmedik bir hata oluştu: Collection objects do not implement truth value testing or bool(). Please compare with None instead: collection is not None. IP: 172.18.0.1
+2025-07-26 23:16:18.848 | WARNING  | app.models:log_attempt:102 - Hatalı giriş denemesi: Kullanıcı 'UNKNOWN', IP: 172.18.0.1
+2025-07-26 23:58:23.585 | INFO     | app.utils:<module>:11 - FaceNet modeli başarıyla yüklendi (keras-facenet).
+2025-07-26 23:58:23.623 | INFO     | app:create_app:19 - Flask uygulaması başlatıldı.
+2025-07-26 23:58:23.646 | INFO     | __main__:<module>:39 - Waitress sunucusu başlatılıyor. Dinlenen port: 5000
+2025-07-26 23:58:24.653 | INFO     | __main__:create_admin_user_if_not_exists:28 - Admin kullanıcısı zaten mevcut.
+2025-07-26 23:58:24.654 | INFO     | __main__:create_admin_user_if_not_exists:31 - Uygulama başlangıç ön-işlemleri tamamlandı.
+2025-07-26 23:59:03.497 | INFO     | app.routes:extract_embedding_api:300 - Yüz embedding'i başarıyla çıkarıldı. IP: 172.18.0.1

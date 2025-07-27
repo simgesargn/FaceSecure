@@ -17,13 +17,13 @@ admin_bp = Blueprint('admin', __name__)
 user_model = User()
 failed_login_model = FailedLogin()
 
-# Simge: Bu dekoratör, API endpoint'lerimizi güvende tutmak için var.
-# Her API isteğinde geçerli bir JWT token'ı bekliyor.
+
+# Her API isteğinde geçerli bir JWT token bekliyor
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
-        # Simge: Token'ı Authorization başlığından 'Bearer <token>' formatında alıyorum.
+        # Token'ı Authorization başlığından 'Bearer <token>' formatında aldım.
         if 'Authorization' in request.headers:
             token = request.headers['Authorization'].split(" ")[1]
         
@@ -48,8 +48,8 @@ def token_required(f):
         return f(current_user, *args, **kwargs)
     return decorated
 
-# Simge: Bu dekoratör, sadece admin yetkisi olan kullanıcıların erişebileceği API'ler için.
-# Güvenlik katmanımızı daha da güçlendiriyor.
+# sadece admin yetkisi olan kullanıcıların erişebileceği API'ler için.
+#
 def admin_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -72,7 +72,7 @@ def admin_required(f):
                 logger.warning(f"Admin yetkisi kontrolü için kullanıcı ID ({current_user_id}) bulunamadı.")
                 return jsonify({'message': 'Kullanıcı bulunamadı!'}), 401
 
-            # Simge: Basit bir admin kontrolü yapıyorum. Gerçek projelerde daha detaylı rol tabanlı yetkilendirme olur.
+            # Simge: Basit bir admin kontrolü yapmak için
             if current_user['username'] != Config.ADMIN_USERNAME:
                 logger.warning(f"Yetkisiz admin erişim denemesi: Kullanıcı '{current_user['username']}'.")
                 return jsonify({'message': 'Yönetici yetkisi gerekli!'}), 403
@@ -85,7 +85,7 @@ def admin_required(f):
 
 
 # --- Ana Sayfa ve Kullanıcı Arayüzü Rotaları ---
-# Simge: Bu sayfalar herkesin erişimine açık olmalı, o yüzden dekoratör kullanmıyorum.
+
 @main_bp.route('/')
 def index():
     return render_template('index.html')
@@ -98,30 +98,26 @@ def register_page():
 def login_page():
     return render_template('login.html')
 
-# Simge: Dashboard ve Admin sayfaları için token_required dekoratörünü kaldırdım.
-# Çünkü bu sayfaların kendisi render edilirken henüz token olmayabilir.
-# Token kontrolünü artık bu sayfaların içindeki JavaScript'te yapıyorum ve
-# API çağrılarına ekliyorum, bu daha esnek bir yaklaşım.
+
 @main_bp.route('/dashboard')
 def dashboard_page():
-    # Simge: Kullanıcı adını doğrudan template'e göndermiyorum, JS'ten alacak.
+    # Kullanıcı adını doğrudan template göndermiyorum
     return render_template('dashboard.html')
 
 @main_bp.route('/admin')
 def admin_page():
-    # Simge: Admin panelindeki kullanıcı listesini doğrudan burada çekmiyorum,
-    # JavaScript API çağrısı ile çekecek. Bu sayede sayfa daha hızlı yüklenir.
+   
     return render_template('admin.html')
 
 # --- Kimlik Doğrulama API Rotaları ---
 
 @auth_bp.route('/register', methods=['POST'])
-@admin_required # Simge: Yeni kullanıcı ekleme sadece admin yetkisiyle yapılmalı, güvenlik için kritik.
+@admin_required # Yeni kullanıcı ekleme sadece admin yetkisiyle yapılmalı
 def register(current_user):
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-    face_embeddings = data.get('face_embeddings') # 128 boyutlu embedding listesi
+    face_embeddings = data.get('face_embeddings') # 128 boyutlu
 
     if not username or not password or not face_embeddings:
         logger.warning("Kullanıcı kaydı için eksik bilgi alındı.")
@@ -135,10 +131,8 @@ def register(current_user):
         logger.error("Geçersiz yüz verisi formatı alındı.")
         return jsonify({'message': 'Geçersiz yüz verisi formatı.'}), 400
 
-    # Simge: Embedding'leri doğrudan veritabanına kaydediyorum.
-    # Güvenlik için, hassas veritabanlarında embedding'ler şifrelenebilir.
-    # Şimdilik hash'leme yapmıyorum çünkü hash'lenen embedding'ler karşılaştırılamaz.
-    # Bu yüzden şimdilik doğrudan kaydediyorum.
+   
+    
     face_embeddings_np = [np.array(e, dtype=np.float32).tolist() for e in face_embeddings]
 
     user_id = user_model.create_user(username, password, face_embeddings_np)
@@ -153,7 +147,7 @@ def login_with_password():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-    ip_address = request.remote_addr # Simge: Kim nereden giriş yapmaya çalışıyor, loglamak önemli.
+    ip_address = request.remote_addr #  Kim nereden giriş yapmaya çalışıyor
 
     if not username or not password:
         failed_login_model.log_attempt(username, ip_address)
@@ -174,7 +168,7 @@ def login_with_password():
 def login_with_face():
     data = request.get_json()
     image_data = data.get('image')
-    username_hint = data.get('username_hint') # Simge: Bu ipucu, büyük veri tabanlarında aramayı hızlandırabilir.
+    username_hint = data.get('username_hint') #arama hızladır
     ip_address = request.remote_addr
 
     if not image_data:
@@ -187,12 +181,12 @@ def login_with_face():
         nparr = np.frombuffer(base64.b64decode(encoded_data), np.uint8)
         frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-        if frame is None:
-            logger.warning(f"login_with_face: Geçersiz görüntü formatı veya boş kare. IP: {ip_address}") # Simge: Log ekledim.
+        if frame is None or frame.size == 0 or frame.shape[0] == 0 or frame.shape[1] == 0: # Boş geçersiz frame kontrolü 
+            logger.warning(f"login_with_face: Geçersiz görüntü formatı veya boş kare. IP: {ip_address}") 
             failed_login_model.log_attempt("UNKNOWN", ip_address)
             return jsonify({'message': 'Geçersiz görüntü formatı!'}), 400
 
-        yuzler = detect_faces(frame) # Simge: Fonksiyon adını Türkçe bıraktım, daha samimi olsun.
+        yuzler = detect_faces(frame)
 
         if len(yuzler) == 0:
             failed_login_model.log_attempt("UNKNOWN", ip_address)
@@ -207,7 +201,7 @@ def login_with_face():
         (x, y, w, h) = yuzler[0]
         yuz_bolgesi = get_face_roi(frame, (x, y, w, h)) 
         
-        if yuz_bolgesi is None: # Simge: Kırpılan yüz bölgesi boş gelirse hata ver.
+        if yuz_bolgesi is None: # Kırpılan yüz bölgesi boş gelirse hata ver.
             logger.warning(f"login_with_face: Yüz bölgesi kırpma sonrası boş. IP: {ip_address}")
             failed_login_model.log_attempt("UNKNOWN", ip_address)
             return jsonify({'message': 'Yüz bölgesi işlenirken hata.'}), 500
@@ -259,7 +253,7 @@ def login_with_face():
         failed_login_model.log_attempt("UNKNOWN", ip_address)
         return jsonify({'message': 'Sunucu hatası.'}), 500
 
-# Simge: Yeni endpoint! Bu, register sayfasının yüz embedding'lerini çekmek için kullanacağı yer.
+
 # Sadece embedding çıkaracak, giriş yapmayacak.
 @main_bp.route('/api/utils/extract_embedding', methods=['POST'])
 def extract_embedding_api():
@@ -277,7 +271,7 @@ def extract_embedding_api():
         frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
         if frame is None:
-            logger.warning(f"extract_embedding_api: Geçersiz görüntü formatı veya boş kare. IP: {ip_address}") # Simge: Log ekledim.
+            logger.warning(f"extract_embedding_api: Geçersiz görüntü formatı veya boş kare. IP: {ip_address}") 
             return jsonify({'message': 'Geçersiz görüntü formatı!'}), 400
 
         yuzler = detect_faces(frame)
@@ -289,10 +283,11 @@ def extract_embedding_api():
             logger.warning(f"Embedding çıkarımı için birden fazla yüz algılandı. IP: {ip_address}")
             return jsonify({'message': 'Birden fazla yüz algılandı. Lütfen sadece bir yüzünüzün ekranda olduğundan emin olun.'}), 400
 
+
         (x, y, w, h) = yuzler[0]
         yuz_bolgesi = get_face_roi(frame, (x, y, w, h))
         
-        if yuz_bolgesi is None: # Simge: Kırpılan yüz bölgesi boş gelirse hata ver.
+        if yuz_bolgesi is None: #Kırpılan yüz bölgesi boş gelirse hata ver.
             logger.warning(f"extract_embedding_api: Yüz bölgesi kırpma sonrası boş. IP: {ip_address}")
             return jsonify({'message': 'Yüz bölgesi işlenirken hata.'}), 500
 
@@ -303,7 +298,7 @@ def extract_embedding_api():
             return jsonify({'message': 'Yüz özellik çıkarımında hata.'}), 500
 
         logger.info(f"Yüz embedding'i başarıyla çıkarıldı. IP: {ip_address}")
-        return jsonify({'embedding': anlik_yuz_embedding.tolist()}), 200 # Embedding'i liste olarak döndürüyoruz.
+        return jsonify({'embedding': anlik_yuz_embedding.tolist()}), 200 # Embedding'i liste olarak döndür
 
     except Exception as e:
         logger.error(f"Embedding çıkarımı sırasında beklenmedik bir hata oluştu: {e}. IP: {ip_address}")
@@ -313,12 +308,12 @@ def extract_embedding_api():
 # --- Yönetim Paneli API Rotaları ---
 
 @admin_bp.route('/users', methods=['GET'])
-@token_required # Simge: Admin paneli kullanıcı listesi için token gerekli.
-@admin_required # Simge: Sadece adminler bu listeyi görebilmeli.
+@token_required 
+@admin_required
 def get_users(current_user):
     users = []
     if user_model.collection:
-        # Simge: MongoDB'den tüm kullanıcıları çekiyorum. Password hash'lerini göndermemek güvenlik için önemli.
+        # MongoDB'den tüm kullanıcıları çek
         for user in user_model.collection.find({}, {"username": 1, "created_at": 1, "last_login": 1}): 
             users.append({
                 'id': str(user['_id']),
@@ -330,9 +325,9 @@ def get_users(current_user):
     return jsonify(users), 200
 
 @admin_bp.route('/users/<user_id>', methods=['DELETE'])
-@token_required # Simge: Kullanıcı silme için token gerekli.
-@admin_required # Simge: Sadece adminler kullanıcı silebilir.
-def delete_user_api(current_user, user_id): # Fonksiyon adını değiştirdim, çakışmasın.
+@token_required 
+@admin_required # Sadece adminler kullanıcı silebilir.
+def delete_user_api(current_user, user_id): 
     if user_model.delete_user(user_id):
         logger.info(f"Admin '{current_user['username']}' kullanıcı ID '{user_id}' silindi.")
         return jsonify({'message': 'Kullanıcı başarıyla silindi.'}), 200
@@ -340,12 +335,12 @@ def delete_user_api(current_user, user_id): # Fonksiyon adını değiştirdim, �
     return jsonify({'message': 'Kullanıcı silinirken hata oluştu veya kullanıcı bulunamadı.'}), 404
 
 @admin_bp.route('/failed_logins', methods=['GET'])
-@token_required # Simge: Hatalı giriş logları için token gerekli.
-@admin_required # Simge: Sadece adminler hatalı giriş loglarını görebilmeli.
+@token_required 
+@admin_required # Sadece adminler hatalı giriş loglarını görebilmeli.
 def get_failed_logins(current_user):
     failed_attempts = []
     if failed_login_model.collection:
-        # Simge: En son denemeler üstte görünsün diye zaman damgasına göre tersten sıralıyorum.
+       
         for attempt in failed_login_model.collection.find({}).sort("timestamp", -1): 
             failed_attempts.append({
                 'username': attempt['username'],
@@ -356,15 +351,14 @@ def get_failed_logins(current_user):
     return jsonify(failed_attempts), 200
 
 
-# Simge: Bu video akışı rotası, kameradan canlı görüntüyü web sayfasına aktarıyor.
-# Yüz algılama ve çizimler burada frame frame işleniyor.
+
 @main_bp.route('/video_feed')
 def video_feed():
     def generate_frames():
-        cap = cv2.VideoCapture(0) # 0 varsayılan kamera demek, benim bilgisayarımda bu çalışıyor.
+        cap = cv2.VideoCapture(0) 
         if not cap.isOpened():
             logger.error("Kamera açılamadı! Lütfen kamera bağlantısını veya izinleri kontrol edin.")
-            # Simge: Kamera açılmazsa döngüye girmesin diye buradan çıkıyorum.
+            #Kamera açılmazsa döngüye girmesin diye buradan çıkıyorum.
             return
 
         while True:
@@ -384,7 +378,7 @@ def video_feed():
                 yield (b'--frame\r\n'
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
             
-            # Çok hızlı frame göndermemek için küçük bir gecikme ekledim,
+            # Çok hızlı frame gönderememek için küçük bir gecikme ekledim,
            
             time.sleep(0.01) 
 

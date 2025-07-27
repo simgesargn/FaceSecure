@@ -8,12 +8,12 @@
         width: 100%;
         border-collapse: collapse;
         margin-top: 20px;
-        border-radius: 0.5rem; /* rounded-lg */
-        overflow: hidden; /* Köşelerin düzgün görünmesi için */
+        border-radius: 0.5rem; 
+        overflow: hidden; /* Köşelerin düzgün görünmesi için koydum*/
     }
     th, td {
-        border: 1px solid #e2e8f0; /* Tailwind border-gray-200 */
-        padding: 12px 16px; /* Daha fazla padding */
+        border: 1px solid #e2e8f0; 
+        padding: 12px 16px; 
         text-align: left;
     }
     th {
@@ -22,10 +22,10 @@
         color: #334155;
     }
     tr:nth-child(even) {
-        background-color: #f8fafc; /* Tailwind bg-gray-50 */
+        background-color: #f8fafc; 
     }
     .delete-btn {
-        background-color: #ef4444; /* Tailwind red-500 */
+        background-color: #ef4444; 
         color: white;
         padding: 6px 12px;
         border: none;
@@ -35,7 +35,7 @@
         transition: background-color 0.3s ease, transform 0.1s ease;
     }
     .delete-btn:hover {
-        background-color: #dc2626; /* Tailwind red-600 */
+        background-color: #dc2626; 
         transform: translateY(-1px);
     }
     #admin-messages {
@@ -60,7 +60,7 @@
 
 {% block content %}
     <h1 class="text-3xl font-semibold text-center mb-6">Admin Paneli</h1>
-    <p class="text-lg text-center text-gray-700 mb-8">Hoş Geldiniz, <span class="font-bold text-blue-600">{{ username }}</span>! Buradan kullanıcıları ve hatalı giriş denemelerini yönetebilirsiniz.</p>
+    <p class="text-lg text-center text-gray-700 mb-8">Hoş Geldiniz, <span class="font-bold text-blue-600">{{ username }}</span>! Buradan kayıtlı kullanıcıları ve hatalı giriş denemelerini yönetebilirsiniz.</p>
 
     <div class="mb-8 p-6 bg-gray-50 rounded-lg shadow-md">
         <h2 class="text-2xl font-medium mb-4">Kayıtlı Kullanıcılar</h2>
@@ -75,7 +75,7 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Kullanıcılar buraya JS ile yüklenecek -->
+ 
             </tbody>
         </table>
     </div>
@@ -101,26 +101,25 @@
 
 {% block scripts %}
 <script>
-    // Simge: Admin paneli scripti! Burası biraz daha yetki gerektiriyor, o yüzden token kontrolü çok önemli.
+    // Admin paneli
     const usersTableBody = document.querySelector('#users-table tbody');
     const failedLoginsTableBody = document.querySelector('#failed-logins-table tbody');
     const adminMessagesDiv = document.getElementById('admin-messages');
 
-    // Mesajları göstermek için yardımcı fonksiyon.
+    // Mesajları göstermek için 
     function showMessage(message, type) {
         adminMessagesDiv.textContent = message;
         adminMessagesDiv.className = `message ${type}`;
         setTimeout(() => {
             adminMessagesDiv.textContent = '';
             adminMessagesDiv.className = 'message';
-        }, 5000); // Mesaj 5 saniye sonra kaybolur
+        }, 5000); // Mesaj 5 saniye sonra kaybolsun
     }
 
-    // Kullanıcıları API'den çekme fonksiyonu
+    // Kullanıcıları apiden çekme fonksiyonu
     async function fetchUsers() {
         const token = localStorage.getItem('jwt_token');
         if (!token) {
-            // Simge: Token yoksa, admin bile olsa erişim olmamalı. Login sayfasına yönlendiriyorum.
             showMessage("Yetkilendirme hatası. Lütfen admin olarak giriş yapın.", 'error');
             window.location.href = '/login';
             return;
@@ -128,7 +127,7 @@
         try {
             const response = await fetch('/api/admin/users', {
                 headers: {
-                    'Authorization': `Bearer ${token}` // JWT token'ını başlığa ekliyorum.
+                    'Authorization': `Bearer ${token}` 
                 }
             });
             if (response.ok) {
@@ -136,9 +135,9 @@
                 renderUsers(users);
             } else {
                 const errorData = await response.json();
-                // Simge: Eğer sunucudan bir hata gelirse, onu kullanıcıya gösteriyorum.
+                // kullanıcı için hata mesajı
                 showMessage(`Kullanıcılar getirilirken hata: ${errorData.message}`, 'error');
-                // Özellikle 401 ise login'e yönlendir.
+                
                 if (response.status === 401 || response.status === 403) {
                     window.location.href = '/login';
                 }
@@ -162,8 +161,8 @@
             const deleteBtn = document.createElement('button');
             deleteBtn.textContent = 'Sil';
             deleteBtn.className = 'delete-btn';
-            // Simge: Silme butonuna tıklandığında deleteUser fonksiyonunu çağırıyorum.
-            // Kullanıcıya emin olup olmadığını sormak her zaman iyi bir uygulama.
+           
+            // Kullanıcıya emin olup olmadığını sor
             deleteBtn.addEventListener('click', () => deleteUser(user.id, user.username));
             actionsCell.appendChild(deleteBtn);
         });
@@ -171,7 +170,7 @@
 
     // Kullanıcı silme fonksiyonu
     async function deleteUser(userId, username) {
-        // Simge: Silmeden önce son bir onay alıyorum, çünkü bu işlem geri alınamaz!
+        // Silmeden önce son bir onay al
         if (!confirm(`Kullanıcı '${username}' silinecek. Emin misiniz?`)) {
             return;
         }
@@ -186,7 +185,7 @@
             const data = await response.json();
             if (response.ok) {
                 showMessage(data.message, 'success');
-                fetchUsers(); // Silme başarılıysa listeyi güncelliyorum.
+                fetchUsers(); // Silme başarılıysa listeyi güncelle
             } else {
                 showMessage(`Kullanıcı silinirken hata: ${data.message}`, 'error');
             }
@@ -196,11 +195,11 @@
         }
     }
 
-    // Hatalı giriş denemelerini API'den çekme fonksiyonu
+    // Hatalı giriş denemelerini apiden çek
     async function fetchFailedLogins() {
         const token = localStorage.getItem('jwt_token');
         if (!token) {
-            return; // Token yoksa bu logları çekmeye gerek yok.
+            return; 
         }
         try {
             const response = await fetch('/api/admin/failed_logins', {
@@ -221,7 +220,8 @@
         }
     }
 
-    // Hatalı giriş denemelerini tabloya render etme fonksiyonu
+
+    // Hatalı giriş render etme
     function renderFailedLogins(attempts) {
         failedLoginsTableBody.innerHTML = ''; // Tabloyu temizle
         attempts.forEach(attempt => {
@@ -232,7 +232,7 @@
         });
     }
 
-    // Sayfa yüklendiğinde kullanıcıları ve hatalı girişleri çekiyorum.
+    
     document.addEventListener('DOMContentLoaded', () => {
         fetchUsers();
         fetchFailedLogins();

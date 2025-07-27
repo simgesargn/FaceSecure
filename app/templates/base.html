@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMGSecure - {% block title %}{% endblock %}</title>
-    <!-- Tailwind CSS CDN -->
+    <title>TutiSecure - {% block title %}{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Özel font ve temel stiller */
+        /* font ve temel stiller */
         body {
-            font-family: 'Inter', sans-serif; /* Daha modern bir font */
-            background-color: #f8fafc; /* Hafif gri arka plan */
+            font-family: 'Inter', sans-serif; 
+            background-color: #f8fafc; 
             color: #334155; /* Koyu gri metin */
         }
+
         header {
-            background-color: #1e293b; /* Koyu lacivert header */
+            background-color: #470f5c;
             padding: 1rem 0;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
@@ -24,18 +24,18 @@
             gap: 1.5rem;
         }
         nav a, nav button {
-            color: #f8fafc; /* Açık gri metin */
+            color: #f8fafc; 
             text-decoration: none;
             padding: 0.5rem 1rem;
-            border-radius: 0.5rem; /* Hafif yuvarlak köşeler */
+            border-radius: 0.5rem;
             transition: background-color 0.3s ease;
         }
         nav a:hover, nav button:hover {
-            background-color: #334155; /* Hover'da daha koyu gri */
+            background-color: #7d44cc; 
         }
         button {
             cursor: pointer;
-            background-color: #3b82f6; /* Mavi buton */
+            background-color: #7d44cc;
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
@@ -43,27 +43,27 @@
             transition: background-color 0.3s ease, transform 0.1s ease;
         }
         button:hover {
-            background-color: #2563eb; /* Koyu mavi hover */
-            transform: translateY(-1px); /* Hafif yukarı kalkma efekti */
+            background-color: #470f5c;
+            transform: translateY(-1px); 
         }
         main {
             max-width: 960px;
             margin: 2rem auto;
             padding: 1.5rem;
             background-color: #ffffff;
-            border-radius: 0.75rem; /* Daha belirgin yuvarlak köşeler */
+            border-radius: 0.75rem;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Daha belirgin gölge */
         }
         footer {
             text-align: center;
             padding: 1.5rem;
             margin-top: 2rem;
-            color: #64748b; /* Orta gri metin */
+            color: #64748b; 
             font-size: 0.875rem;
         }
         input[type="text"], input[type="password"] {
             padding: 0.75rem;
-            border: 1px solid #cbd5e1; /* Açık gri kenarlık */
+            border: 1px solid #cbd5e1; 
             border-radius: 0.5rem;
             width: 100%;
             box-sizing: border-box;
@@ -77,7 +77,7 @@
         }
         hr {
             border: none;
-            border-top: 1px solid #e2e8f0; /* Açık gri çizgi */
+            border-top: 1px solid #e2e8f0;
             margin: 2rem 0;
         }
         .message {
@@ -107,7 +107,7 @@
             <a href="/login" class="hover:bg-blue-700">Giriş Yap</a>
             <a href="/register" class="hover:bg-blue-700">Kayıt Ol (Admin)</a>
             <a href="/dashboard" class="hover:bg-blue-700">Dashboard</a>
-            <a href="/admin" class="hover:bg-blue-700">Yönetim</a>
+            <a href="/admin" class="hover:bg-blue-700">Admin</a>
             <button id="logout-btn" class="bg-red-600 hover:bg-red-700" style="display: none;">Çıkış Yap</button>
         </nav>
     </header>
@@ -115,7 +115,7 @@
         {% block content %}{% endblock %}
     </main>
     <footer class="mt-auto">
-        <p>&copy; 2023 SMGSecure. Tüm Hakları Saklıdır.</p>
+        <p>&copy; 2025 TutiSecure. Tüm Hakları Saklıdır.</p>
     </footer>
     <script>
         document.addEventListener('DOMContentLoaded', () => {

@@ -5,7 +5,7 @@ from keras_facenet import FaceNet
 from loguru import logger
 import os
 
-# Simge: FaceNet modelini başlatıyorum. keras_facenet kütüphanesi modeli otomatik indirip yönetiyor, harika!
+# FaceNet modeli
 try:
     facenet_model = FaceNet() 
     logger.info("FaceNet modeli başarıyla yüklendi (keras-facenet).")
@@ -13,12 +13,11 @@ except Exception as e:
     logger.error(f"FaceNet modeli yüklenirken hata: {e}") 
     facenet_model = None
 
-# MediaPipe Face Detection ve Face Mesh modüllerini başlatıyorum.
 mp_face_detection = mp.solutions.face_detection
 mp_face_mesh = mp.solutions.face_mesh
 mp_drawing = mp.solutions.drawing_utils
 
-# Yüz algılama için eşik değerleri.
+# Yüz algılama için
 DETECTION_CONFIDENCE = 0.70 
 TRACKING_CONFIDENCE = 0.5 
 
@@ -27,21 +26,20 @@ def preprocess_face(image, required_size=(160, 160)):
     Simge: Yüz görüntüsünü FaceNet modelinin beklediği formata getiriyor.
     Boyutlandırma ve standardizasyon burada yapılıyor.
     """
-    # Görüntünün boş olup olmadığını kontrol et, boşsa None döndür.
-    if image is None or image.size == 0 or image.shape[0] == 0 or image.shape[1] == 0: # Simge: Daha sağlam kontrol ekledim.
+    # Görüntünün boş olup olmadığını kontrol et boşsa None döndür
+    if image is None or image.size == 0 or image.shape[0] == 0 or image.shape[1] == 0: 
         logger.warning("preprocess_face: Görüntü boş veya geçersiz boyutlara sahip, None döndürüldü.")
         return None
 
     try:
-        # Simge: Görüntüyü yeniden boyutlandırıyorum.
+        # yeniden boyutlandırdım
         resized_image = cv2.resize(image, required_size)
         resized_image = resized_image.astype('float32')
         
-        # Simge: Standardizasyon. Bu, modelin daha iyi performans göstermesine yardımcı olur.
         mean, std = resized_image.mean(), resized_image.std()
         image_standardized = (resized_image - mean) / std 
         
-        # Simge: Modele uygun hale getirmek için bir boyut daha ekliyorum (batch boyutu).
+       
         image_expanded = np.expand_dims(image_standardized, axis=0) 
         return image_expanded
     except Exception as e:
@@ -57,18 +55,16 @@ def get_face_embedding(face_image):
         logger.error("get_face_embedding: FaceNet modeli yüklenemedi. Embedding çıkarılamıyor.")
         return None
     
-    # Simge: Ön işleme sonrası görüntü None gelirse, embedding çıkarmayı deneme.
+    
     on_islenmis_yuz = preprocess_face(face_image)
     if on_islenmis_yuz is None: 
         logger.warning("get_face_embedding: Ön işlenmiş yüz boş veya geçersiz, embedding çıkarılamıyor.")
         return None
 
     try:
-        # Simge: Modelden embedding'i alıyorum. embeddings metodu bir liste bekler.
         embedding = facenet_model.embeddings(on_islenmis_yuz)[0] 
         
-        # Simge: L2 normalizasyon. Embedding'leri birim vektör haline getirir,
-        # bu da kosinüs benzerliği için idealdir.
+      
         embedding_norm = embedding / np.linalg.norm(embedding) 
         return embedding_norm
     except Exception as e:
@@ -82,8 +78,8 @@ def detect_faces(frame):
     """
     algilanan_yuzler = [] 
     
-    # Görüntünün boş olup olmadığını kontrol et. Boşsa, OpenCV hatası vermeden boş liste döndür.
-    if frame is None or frame.size == 0 or frame.shape[0] == 0 or frame.shape[1] == 0: # Simge: Daha sağlam kontrol ekledim.
+    # Görüntünün boş olup olmadığını kontrol et. BoşsaOpenCV hatası vermeden boş liste döndür.
+    if frame is None or frame.size == 0 or frame.shape[0] == 0 or frame.shape[1] == 0: 
         logger.warning("detect_faces: Görüntü boş veya geçersiz, yüz algılanamadı.")
         return []
 
@@ -134,7 +130,7 @@ def get_face_roi(frame, bbox):
     """
     x, y, w, h = bbox
     
-    # Simge: Kırpma sınırlarını kontrol ediyorum, böylece görüntü dışına taşmıyoruz.
+    
     if y < 0: y = 0
     if x < 0: x = 0
     if y + h > frame.shape[0]: h = frame.shape[0] - y
@@ -156,7 +152,7 @@ def draw_annotations(frame, faces):
     Simge: Algılanan yüzlerin etrafına yeşil dikdörtgenler çizer.
     Bu, kullanıcının yüzünün algılanıp algılanmadığını görsel olarak görmesini sağlar.
     """
-    if frame is None or frame.size == 0: # Simge: Boş frame kontrolü ekledim.
+    if frame is None or frame.size == 0: #Boş frame kontrol
         return frame
 
     try:
