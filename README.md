@@ -56,22 +56,37 @@ Dockerfile ve docker-compose ile yapılandırılmıştır.
 
 ## Karşılaşılan Engeller ve Çözümleri
 Her sorun bir şey öğretti. İşte bazıları:
+
 python-dotenv Eksikliği → requirements.txt dosyasına eklendi
+
 Docker Volume Erişimi Reddi → Docker Desktop’da dosya paylaşımı açıldı
+
 Port Çakışması (5001) → Tüm konteynerler temizlendi
+
 OpenCV libGL Hatası → Dockerfile'a gerekli sistem kütüphaneleri eklendi
+
 pip install Timeout → --timeout 300 --retries 5 parametreleri eklendi
+
 TensorFlow Eksikliği → tensorflow paketi manuel olarak eklendi
+
 cv2.resize Hatası → Boş görüntüler için kontroller eklendi
+
 Token Eksikliği (HTML sayfaları) → @token_required dekoratörleri sadece API’lerde bırakıldı
 
 ## Gelecek Planlar
+
 Yüz algılama sırasında anlık geri bildirimler
+
 Parola sıfırlama mekanizması
+
 Kullanıcı profil yönetimi
+
 Daha detaylı kullanıcı rolleri
+
 Embedding’ler için şifreli saklama
+
 Performans optimizasyonları
+
 CI/CD entegrasyonu
 
 ## İletişim
