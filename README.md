@@ -1,10 +1,10 @@
-Proje Hakkında
+# Proje Hakkında
 TutiSecure, kullanıcıların yüzlerini kullanarak sisteme güvenli şekilde giriş yapmalarını sağlayan modern bir kimlik doğrulama çözümüdür.
 Python tabanlı Flask web çerçevesi, MongoDB veritabanı ve güçlü makine öğrenimi kütüphaneleri (TensorFlow, MediaPipe, FaceNet) ile geliştirilmiştir.
 Docker desteği sayesinde kolayca kurulabilir ve çalıştırılabilir.
 
 ## Özellikler ve Karşılanan İsterler
-# Fonksiyonel İsterler
+### Fonksiyonel İsterler
 Kullanıcı Yüz Verisi Kaydı:
 /register sayfasında yeni kullanıcılar yüz verilerini kaydedebilir.
 
@@ -35,7 +35,7 @@ Yeni kullanıcı kaydı sadece admin yetkisiyle yapılabilir.
 Çoklu Yüz Algılama Uyarısı:
 Kamerada birden fazla yüz algılanırsa işlem reddedilir.
 
-# Teknik Gereksinimler
+### Teknik Gereksinimler
 Face Embedding:
 keras-facenet ile FaceNet modelinden 128 boyutlu yüz embedding’leri çıkarılır.
 
@@ -54,7 +54,7 @@ Dockerfile ve docker-compose ile yapılandırılmıştır.
 (Opsiyonel) PCA ile boyut indirgeme henüz uygulanmamıştır.
 
 
-## Karşılaşılan Engeller ve Çözümleri
+### Karşılaşılan Engeller ve Çözümleri
 Her sorun bir şey öğretti. İşte bazıları:
 
 python-dotenv Eksikliği → requirements.txt dosyasına eklendi
@@ -73,7 +73,7 @@ cv2.resize Hatası → Boş görüntüler için kontroller eklendi
 
 Token Eksikliği (HTML sayfaları) → @token_required dekoratörleri sadece API’lerde bırakıldı
 
-## Gelecek Planlar
+### Gelecek Planlar
 
 Yüz algılama sırasında anlık geri bildirimler
 
@@ -89,7 +89,7 @@ Performans optimizasyonları
 
 CI/CD entegrasyonu
 
-## İletişim
+### İletişim
 Simge Sargın
 simge.sargn@gmail.com
 LinkedIn: https://www.linkedin.com/in/simgesarg%C4%B1n-9812s/
